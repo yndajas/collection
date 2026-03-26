@@ -2,10 +2,12 @@ source "https://rubygems.org"
 
 gem "bootsnap", require: false
 gem "devise", "~> 5.0"
+gem "devise-two-factor", "~> 6.4"
 gem "kamal", require: false
 gem "propshaft"
 gem "puma", ">= 5.0"
 gem "rails", "~> 8.1.3"
+gem "rqrcode", "~> 3.2"
 gem "solid_cache"
 gem "sqlite3", ">= 2.1"
 gem "thruster", require: false
