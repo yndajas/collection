@@ -2,7 +2,8 @@
   "name": "collection",
   "version": "1.0.0",
   "scripts": {
-    "lint:md": "markdownlint '**/*.md'"
+    "lint:md": "markdownlint '**/*.md'",
+    "lint:md:fix": "markdownlint --fix '**/*.md'"
   },
   "devDependencies": {
     "markdownlint-cli": "^0.48.0"
