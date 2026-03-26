@@ -1,24 +1,21 @@
-# README
+# Collection
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Database setup
 
-Things you may want to cover:
+To set up the database, run:
 
-* Ruby version
+```bash
+bin/rails db:prepare
+```
 
-* System dependencies
+To seed the database with initial data:
 
-* Configuration
+```bash
+bin/rails db:seed
+```
 
-* Database creation
+To reset the database (delete and recreate):
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```bash
+bin/rails db:reset
+```
