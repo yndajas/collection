@@ -15,6 +15,6 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_controller?
-    controller_path == 'two_factor_authentication/setup'
+    controller_path == "two_factor_authentication/setup"
   end
 end

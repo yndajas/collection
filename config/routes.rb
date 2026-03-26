@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   namespace :two_factor_authentication do
-    resource :setup, only: [:show, :update], controller: 'setup'
+    resource :setup, only: [ :show, :update ], controller: "setup"
   end
   devise_for :users
   get "root/index"

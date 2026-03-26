@@ -6,5 +6,4 @@ class User < ApplicationRecord
          :rememberable,
          :validatable,
          otp_secret_encryption_key: Rails.application.credentials.otp_secret_encryption_key
-
 end
