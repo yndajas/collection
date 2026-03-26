@@ -3,5 +3,5 @@ Then "I should see {string}" do |content|
 end
 
 Then "I should see a QR code" do
-  expect(page).to have_selector('div.qr-code svg')
+  expect(page).to have_selector("div.qr-code svg")
 end
