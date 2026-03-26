@@ -1,0 +1,10 @@
+{
+  "name": "collection",
+  "version": "1.0.0",
+  "scripts": {
+    "lint:md": "markdownlint '**/*.md'"
+  },
+  "devDependencies": {
+    "markdownlint-cli": "^0.48.0"
+  }
+}
