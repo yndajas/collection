@@ -45,3 +45,10 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
+
+group :test do
+  gem "rspec-rails", "~> 8.0"
+  gem "cucumber-rails", "~> 4.0", require: false
+  gem "capybara", "~> 3.40"
+  gem "database_cleaner-active_record", "~> 2.2"
+end
