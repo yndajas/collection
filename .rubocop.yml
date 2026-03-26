@@ -1,6 +1,7 @@
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 AllCops:
+  NewCops: enable
   Include:
     - "**/*.rb"
     - "**/*.rake"
@@ -12,6 +13,36 @@ AllCops:
     - "bin/**/*"
     - "vendor/**/*"
 
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/LineLength:
+  Max: 80
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
   Include:
@@ -20,3 +51,12 @@ Style/StringLiterals:
     - "Gemfile"
     - "Rakefile"
     - "config.ru"
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma

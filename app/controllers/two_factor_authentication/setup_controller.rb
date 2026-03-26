@@ -23,7 +23,7 @@ module TwoFactorAuthentication
       ensure_otp_secret
       issuer = "Collection"
       label = "#{issuer}:#{current_user.email}"
-      @provisioning_uri = current_user.otp_provisioning_uri(label, issuer: issuer)
+      @provisioning_uri = current_user.otp_provisioning_uri(label, issuer:)
       @qrcode = RQRCode::QRCode.new(@provisioning_uri).as_svg(module_size: 4).html_safe
     end
 

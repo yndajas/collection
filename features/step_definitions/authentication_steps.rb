@@ -1,5 +1,5 @@
 Given "a user exists with email {string} and password {string}" do |email, password|
-  User.create!(email: email, password: password)
+  User.create!(email:, password:)
 end
 
 When "I follow {string}" do |link|
@@ -27,7 +27,7 @@ Given "the user has set up 2FA" do
 end
 
 When "I fill in \"OTP\" with a valid code for {string}" do |email|
-  user = User.find_by!(email: email)
+  user = User.find_by!(email:)
   fill_in "OTP", with: user.current_otp
 end
 
