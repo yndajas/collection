@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "TwoFactorAuthentication::Setup", type: :request do
+RSpec.describe "Two-factor authentication setup", type: :request do
   let(:user) { User.create!(email: "user@example.com", password: "password123") }
 
   before { sign_in user }

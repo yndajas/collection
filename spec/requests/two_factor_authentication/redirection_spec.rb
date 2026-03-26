@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Two-factor Authentication Redirection", type: :request do
+RSpec.describe "Two-factor authentication redirection", type: :request do
   let(:user) { User.create!(email: "user@example.com", password: "password123") }
 
   context "when user is not signed in" do
