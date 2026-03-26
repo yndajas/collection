@@ -26,8 +26,8 @@ Given "the user has set up 2FA" do
   user.update!(otp_secret: User.generate_otp_secret, consumed_timestep: 1)
 end
 
-When "I fill in \"OTP\" with a valid code" do
-  user = User.find_by(email: 'user@example.com')
+When "I fill in \"OTP\" with a valid code for {string}" do |email|
+  user = User.find_by!(email: email)
   fill_in "OTP", with: user.current_otp
 end
 
