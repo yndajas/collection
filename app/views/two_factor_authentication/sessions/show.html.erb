@@ -1,0 +1,14 @@
+<h1>Verify two-factor authentication</h1>
+
+<p>Enter the 6-digit code from your authenticator app:</p>
+
+<%= form_with url: two_factor_authentication_session_path, method: :post do |f| %>
+  <div>
+    <%= f.label :otp_attempt, "OTP" %>
+    <%= f.text_field :otp_attempt, autocomplete: 'one-time-code' %>
+  </div>
+
+  <div>
+    <%= f.submit "Verify" %>
+  </div>
+<% end %>

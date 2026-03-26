@@ -1,8 +1,13 @@
 Rails.application.routes.draw do
   namespace :two_factor_authentication do
     resource :setup, only: [ :show, :update ], controller: "setup"
+    resource :session, only: [ :show, :create ], controller: "sessions"
   end
-  devise_for :users
+
+  devise_for :users, controllers: {
+    sessions: "users/sessions"
+  }
+
   get "root/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
