@@ -1,0 +1,20 @@
+<h1>Set up two-factor authentication</h1>
+
+<p>Scan the following QR code with your authenticator app:</p>
+
+<div class="qr-code">
+  <%= @qrcode %>
+</div>
+
+<p>Then enter the 6-digit code to verify and enable 2FA:</p>
+
+<%= form_with url: two_factor_authentication_setup_path, method: :patch do |f| %>
+  <div>
+    <%= f.label :otp_attempt, "OTP" %>
+    <%= f.text_field :otp_attempt, autocomplete: 'one-time-code' %>
+  </div>
+
+  <div>
+    <%= f.submit "Enable 2FA" %>
+  </div>
+<% end %>
