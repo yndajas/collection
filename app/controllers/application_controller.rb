@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   def ensure_2fa_setup
     return unless user_signed_in?
+    return unless current_user.otp_required_for_login
     return if current_user.consumed_timestep.present?
     return if devise_controller? || setup_controller?
 

@@ -24,3 +24,15 @@ Feature: User authentication
     And I press "Verify"
     Then I should see "Signed in successfully"
     And I should see "Sign out"
+
+  Scenario: User exempt from 2FA signs in
+    Given a user exists with email "exempt@example.com" and password "password123"
+    And the user is exempt from 2FA
+    And I am on the home page
+    When I follow "Sign in"
+    And I fill in "Email" with "exempt@example.com"
+    And I fill in "Password" with "password123"
+    And I press "Log in"
+    Then I should see "Signed in successfully"
+    And I should see "Hello, world"
+    And I should see "Sign out"

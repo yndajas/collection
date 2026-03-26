@@ -30,3 +30,8 @@ When "I fill in \"OTP\" with a valid code" do
   user = User.find_by(email: 'user@example.com')
   fill_in "OTP", with: user.current_otp
 end
+
+Given "the user is exempt from 2FA" do
+  user = User.last
+  user.update!(otp_required_for_login: false)
+end

@@ -2,7 +2,7 @@ class Users::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate!(auth_options)
 
-    if resource.consumed_timestep.present?
+    if resource.otp_required_for_login && resource.consumed_timestep.present?
       session[:otp_user_id] = resource.id
       sign_out(resource)
       redirect_to two_factor_authentication_session_path
