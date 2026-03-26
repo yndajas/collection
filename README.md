@@ -35,3 +35,7 @@ To see the current credentials:
 ```bash
 bin/rails credentials:show
 ```
+
+## AI disclosure
+
+This project was developed with the assistance of Gemini.
