@@ -28,4 +28,5 @@
 - Case: use sentence case for all headings throughout the project and for the terms preceding a colon in a list item.
 - Colon: do not use a capital letter after a colon.
 - Conjunctions: never use ampersands when "and" makes sense.
+- List items: do not bold the terms preceding a colon in a list item.
 - Spacing: include an empty line after every heading.
