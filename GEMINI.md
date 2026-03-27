@@ -22,10 +22,11 @@
 
 - Concurrency: prioritize parallelized jobs in GitHub Actions workflows for
   maximum speed.
+- Development lifecycle: follow a strict TDD approach (failing test first).
+- Cucumber features: move any step definitions used in multiple feature
+  files to `shared_steps.rb`. Ensure feature specs cover entire user journeys.
 - Local verification: maintain `bin/ci` (via `config/ci.rb`) as the
   comprehensive local "source of truth" mirroring the full CI suite.
-- Development lifecycle: follow a strict TDD approach (failing test first).
-  Ensure feature specs (Cucumber) cover entire user journeys.
 
 ## Documentation
 
