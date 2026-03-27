@@ -28,6 +28,10 @@ clear responsibility for each test type.
 - RSpec view specs: will be excluded. User-facing content verification is
   handled by Cucumber, and granular component testing would be better served
   by ViewComponent unit tests if needed in the future.
+- Test data: we will use FactoryBot to manage test data creation. While plain
+  ActiveRecord creation is preferred for simple prototypes, the upcoming
+  introduction of single table inheritance and complex associations justifies
+  the abstraction to keep tests DRY and maintainable.
 
 ## Consequences
 
