@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Two-factor authentication exempt user", type: :request do
-  let(:user) { User.create!(email: "exempt@example.com", password: "password123", otp_required_for_login: false) }
+  let(:user) { create(:user, :exempt_from_2fa) }
 
   describe "POST /users/sign_in" do
     it "logs in the user and redirects to root without 2FA setup" do

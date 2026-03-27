@@ -1,9 +1,8 @@
 Given "a user exists with email {string} and password {string}" do |email, password|
-  User.create!(email:, password:)
+  create(:user, email:, password:)
 end
 
 Given "the user has not set up 2FA" do
-  # This is the default state
   user = User.last
   expect(user.consumed_timestep).to be_nil
 end

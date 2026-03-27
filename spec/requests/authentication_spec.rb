@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authentication", type: :request do
-  let(:user) { User.create!(email: "user@example.com", password: "password123") }
+  let(:user) { create(:user) }
 
   describe "POST /users/sign_in" do
     context "when 2FA is not yet set up" do
