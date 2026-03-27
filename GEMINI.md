@@ -22,7 +22,9 @@
 
 - Concurrency: prioritize parallelized jobs in GitHub Actions workflows for
   maximum speed.
-- Development lifecycle: follow a strict TDD approach (failing test first).
+- Development lifecycle: review the `todo.md` file after completing all other
+  tasks to ensure all remaining items are addressed or prioritised for future
+  sessions. Follow a strict TDD approach (failing test first).
 - Cucumber features: move any step definitions used in multiple feature
   files to `shared_steps.rb`. Ensure feature specs cover entire user journeys.
 - Local verification: maintain `bin/ci` (via `config/ci.rb`) as the
