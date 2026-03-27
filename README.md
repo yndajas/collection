@@ -36,6 +36,24 @@ To see the current credentials:
 bin/rails credentials:show
 ```
 
+## Running tests
+
+To run the full suite of tests and linters locally:
+
+```bash
+bin/ci
+```
+
+To run specific test suites:
+
+```bash
+# Feature specs (user journeys)
+bundle exec cucumber
+
+# Request and unit specs
+bundle exec rspec
+```
+
 ## AI disclosure
 
 This project was developed with the assistance of Gemini.
