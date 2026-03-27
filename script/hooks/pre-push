@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+bin/ci
+
+if [ $? -ne 0 ]; then
+  echo -e "\n\033[0;31mCI failed. Push aborted.\033[0m"
+  exit 1
+fi

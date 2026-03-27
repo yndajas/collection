@@ -1,5 +1,3 @@
-- add pre-push hook to run bin/ci and require it to pass (don't push if the exit
-  code is non-zero)
 - add flow for adding video game to your collection. you should be able to add a
   system, whether it's completed and/or evergreen, whether it has local or
   online multiplayer, whether multiplayer is co-operative and/or competitive,
