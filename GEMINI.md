@@ -8,7 +8,7 @@
 
 ## Git and commit standards
 
-- Commit messages: use concise subjects. Enforce a strict 72-character line limit for commit bodies.
+- Commit messages: use concise subjects (50 characters or less). Enforce a strict 72-character line limit for commit bodies.
 - History management: prefer amending the previous commit for minor follow-up refinements rather than creating new "fix-up" commits.
 - File cleanliness: ensure no consecutive empty lines in configuration files (`.gitignore`, `.dockerignore`, etc.).
 
