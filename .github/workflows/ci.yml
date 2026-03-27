@@ -82,6 +82,13 @@ jobs:
       - name: Run RSpec tests
         run: bundle exec rspec
 
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-rspec
+          path: coverage/rspec/
+          include-hidden-files: true
+
   cucumber:
     runs-on: ubuntu-latest
     steps:
@@ -95,3 +102,10 @@ jobs:
 
       - name: Run Cucumber features
         run: bundle exec cucumber
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cucumber
+          path: coverage/cucumber/
+          include-hidden-files: true

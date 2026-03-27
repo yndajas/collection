@@ -1,3 +1,11 @@
+require "simplecov"
+
+SimpleCov.start "default" do
+  coverage_dir "coverage/rspec"
+  enable_coverage :branch
+  minimum_coverage line: 100, branch: 100
+end
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
 ENV["RAILS_ENV"] ||= "test"
