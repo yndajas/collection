@@ -25,23 +25,32 @@ RSpec.describe "Two-factor authentication sessions", type: :request do
   end
 
   describe "POST /two_factor_authentication/session" do
-    before do
-      post user_session_path, params: { user: { email: user.email, password: user.password } }
-    end
+    context "when otp_user_id is in session" do
+      before do
+        post user_session_path, params: { user: { email: user.email, password: user.password } }
+      end
 
-    context "with valid OTP" do
-      it "signs in the user and redirects to root" do
-        post two_factor_authentication_session_path, params: { otp_attempt: user.current_otp }
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to eq("Signed in successfully")
+      context "with valid OTP" do
+        it "signs in the user and redirects to root" do
+          post two_factor_authentication_session_path, params: { otp_attempt: user.current_otp }
+          expect(response).to redirect_to(root_path)
+          expect(flash[:notice]).to eq("Signed in successfully")
+        end
+      end
+
+      context "with invalid OTP" do
+        it "renders show with alert" do
+          post two_factor_authentication_session_path, params: { otp_attempt: "000000" }
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("Invalid OTP code")
+        end
       end
     end
 
-    context "with invalid OTP" do
-      it "renders show with alert" do
-        post two_factor_authentication_session_path, params: { otp_attempt: "000000" }
-        expect(response).to have_http_status(:success)
-        expect(response.body).to include("Invalid OTP code")
+    context "when otp_user_id is missing" do
+      it "redirects to sign in" do
+        post two_factor_authentication_session_path, params: { otp_attempt: "123456" }
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
