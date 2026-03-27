@@ -1,13 +1,15 @@
 # Development log: Collection
 
-This document summarizes the technical decisions, implementation steps, and rationale established during the development of the Collection application.
+This document summarizes the technical decisions, implementation steps, and
+rationale established during the development of the Collection application.
 
 ## 1. Project initialization
 
 - Environment: Ruby 4.0.2, Rails 8.1.3.
 - Architecture:
   - Standard Rails MVC.
-  - No JavaScript, Action Mailer, Action Mailbox, Active Job, Action Cable, or Jbuilder.
+  - No JavaScript, Action Mailer, Action Mailbox, Active Job, Action Cable,
+    or Jbuilder.
   - SQLite3 for the database.
 - Testing suite:
   - RSpec: for unit and request-level testing.
@@ -23,10 +25,12 @@ This document summarizes the technical decisions, implementation steps, and rati
 - `Gemfile`: tidied to be alphabetical, comment-free, and organized by group.
 - Layout:
   - Implementation of a global `<header>` for authentication links.
-  - Use of a `<main>` element for flash messages (`notice`, `alert`) and yielded content.
+  - Use of a `<main>` element for flash messages (`notice`, `alert`) and
+    yielded content.
 - RuboCop:
   - Configured via `rubocop-rails-omakase`.
-  - Custom rules to enforce double quotes and include `spec/`, `features/`, and `db/` directories.
+  - Custom rules to enforce double quotes and include `spec/`, `features/`,
+    and `db/` directories.
 
 ## 3. Core authentication
 
@@ -34,7 +38,8 @@ This document summarizes the technical decisions, implementation steps, and rati
 - Features:
   - User registration flow.
   - Basic login flow.
-  - Password confirmation preserved for WCAG compliance in a no-JS environment (avoiding "cognitive function tests" versus "redundant entry" trade-offs).
+  - Password confirmation preserved for WCAG compliance in a no-JS environment
+    (avoiding "cognitive function tests" versus "redundant entry" trade-offs).
 
 ## 4. Two-factor authentication (TOTP)
 
@@ -42,25 +47,34 @@ This document summarizes the technical decisions, implementation steps, and rati
 - Security:
   - `otp_secret_encryption_key` managed via Rails encrypted credentials.
   - `ActiveRecord` Encryption configured for database-level secret protection.
-  - Replay attack prevention: mandatory `current_user.save!` in verification controllers to persist `consumed_timestep`.
+  - Replay attack prevention: mandatory `current_user.save!` in verification
+    controllers to persist `consumed_timestep`.
 - Mandatory setup flow:
-  - Global redirection in `ApplicationController` forcing any signed-in user without 2FA setup to the setup page.
-  - `TwoFactorAuthentication::SetupController` for QR code generation and initial verification.
+  - Global redirection in `ApplicationController` forcing any signed-in user
+    without 2FA setup to the setup page.
+  - `TwoFactorAuthentication::SetupController` for QR code generation and
+    initial verification.
 - Login flow:
-  - Overridden `Devise::SessionsController#create` to intercept successful password challenges.
+  - Overridden `Devise::SessionsController#create` to intercept successful
+    password challenges.
   - Temporary session storage of `otp_user_id` while awaiting TOTP verification.
-  - `TwoFactorAuthentication::SessionsController` for final OTP verification and full sign-in.
+  - `TwoFactorAuthentication::SessionsController` for final OTP verification
+    and full sign-in.
 
 ## 5. Documentation and tooling
 
-- `README`: documented database preparation (`db:prepare`, `db:seed`, `db:reset`) and credential management using `master.key`.
+- `README`: documented database preparation (`db:prepare`, `db:seed`,
+  `db:reset`) and credential management using `master.key`.
 - Linting: continuous use of `bin/rubocop -A` to maintain style consistency.
-- Development log: creation of `DEVELOPMENT_LOG.md` to track technical decisions.
+- Development log: creation of `DEVELOPMENT_LOG.md` to track technical
+  decisions.
 
 ## 6. Exempt user logic
 
-- Implementation: leveraged the existing `otp_required_for_login` column to handle 2FA exemptions.
-- Controllers: updated `ApplicationController` and `Users::SessionsController` to skip 2FA setup and challenge for users with `otp_required_for_login: false`.
+- Implementation: leveraged the existing `otp_required_for_login` column to
+  handle 2FA exemptions.
+- Controllers: updated `ApplicationController` and `Users::SessionsController`
+  to skip 2FA setup and challenge for users with `otp_required_for_login: false`.
 - Seeds: added three users in `db/seeds.rb` to cover all authentication states:
   - `user_with_2fa_set_up@example.com` (realistic 32-char secret provided).
   - `user_without_2fa_set_up@example.com`.
@@ -68,15 +82,23 @@ This document summarizes the technical decisions, implementation steps, and rati
 
 ## 7. Tooling and CI refinement
 
-- Markdown linting: added `markdownlint-cli` via Node.js (v24.14.0) with a default 80-character line limit. Added `lint:md` and `lint:md:fix` scripts.
-- CI/CD: renamed the standard lint job to `lint_ruby` and added a `lint_markdown` job to the GitHub Actions workflow.
-- AI disclosure: added a formal disclosure to the `README.md` mentioning the use of Gemini in the development process.
+- Markdown linting: added `markdownlint-cli` via Node.js (v24.14.0) with a
+  default 80-character line limit. Added `lint:md` and `lint:md:fix` scripts.
+- CI/CD: renamed the standard lint job to `lint_ruby` and added a
+  `lint_markdown` job to the GitHub Actions workflow.
+- AI disclosure: added a formal disclosure to the `README.md` mentioning the
+  use of Gemini in the development process.
 
 ## 8. Finalizing and documentation
 
-- CI and test documentation: updated `.github/workflows/ci.yml` and `config/ci.rb` to include comprehensive test suites (RSpec and Cucumber). Added a "Running tests" section to `README.md`.
-- Kamal removal: purged all Kamal configuration and dependencies from the repository, including `.kamal/`, `bin/kamal`, and `config/deploy.yml`.
-- Gemini mandates: created `GEMINI.md` to document persistent repository-specific preferences for future sessions.
+- CI and test documentation: updated `.github/workflows/ci.yml` and
+  `config/ci.rb` to include comprehensive test suites (RSpec and Cucumber).
+  Added a "Running tests" section to `README.md`.
+- Kamal removal: purged all Kamal configuration and dependencies from the
+  repository, including `.kamal/`, `bin/kamal`, and `config/deploy.yml`.
+- Gemini mandates: created `GEMINI.md` to document persistent
+  repository-specific preferences for future sessions.
 
 ---
-*Last updated: Friday, 27 March 2026*
+
+Last updated: Friday, 27 March 2026
