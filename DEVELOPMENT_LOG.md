@@ -99,6 +99,20 @@ rationale established during the development of the Collection application.
 - Gemini mandates: created `GEMINI.md` to document persistent
   repository-specific preferences for future sessions.
 
+## 9. Test infrastructure modernisation
+
+- 100% coverage milestone: reached 100% line coverage across both RSpec and
+  Cucumber, and 100% branch coverage for RSpec, by adding missing scenarios
+  and specs for 2FA error paths and edge cases.
+- FactoryBot integration: introduced `factory_bot_rails` to manage test data.
+  Refactored the entire test suite to use factories instead of direct
+  ActiveRecord creation, providing a scalable foundation for upcoming model
+  complexity.
+- Supporting tasks: added a `coverage:identify_gaps` Rake task to maintain the
+  high coverage standard.
+- Todo management: established `todo.md` and a corresponding mandate in
+  `GEMINI.md` to ensure remaining tasks are tracked and prioritised.
+
 ---
 
 Last updated: Friday, 27 March 2026
