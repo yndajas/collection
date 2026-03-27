@@ -113,6 +113,24 @@ rationale established during the development of the Collection application.
 - Todo management: established `todo.md` and a corresponding mandate in
   `GEMINI.md` to ensure remaining tasks are tracked and prioritised.
 
+## 10. Pre-push automation and workflow refinement
+
+- Pre-push hook: implemented a git hook that automatically executes `bin/ci`
+  before any push, ensuring that only verified code reaches the remote
+  repository.
+- Setup automation: updated `bin/setup` to automatically install and symlink
+  the pre-push hook during environment initialisation.
+- Mandate refinement: established new mandates in `GEMINI.md` for British
+  English usage, 80-character line limits, and organised Cucumber step
+  definitions.
+
+## Next steps
+
+- Collectibles hierarchy: implement the base `Collectible` model and the
+  `VideoGame` subclass using single table inheritance.
+- Video game flow: build the end-to-end journey for adding games to a
+  collection, following a strict TDD cycle (feature -> request -> model).
+
 ---
 
 Last updated: Friday, 27 March 2026
