@@ -26,7 +26,7 @@ end
 
 group :test do
   gem "capybara", "~> 3.40"
-  gem "cucumber-rails", "~> 4.0", require: false
+  gem "cucumber-rails", "~> 4.1", require: false
   gem "database_cleaner-active_record", "~> 2.2"
   gem "rspec-rails", "~> 8.0"
   gem "simplecov", "~> 0.22.0", require: false
