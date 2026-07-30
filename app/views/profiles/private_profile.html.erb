@@ -1,0 +1,15 @@
+<% content_for :title, "Private profile" %>
+
+<div class="empty-state">
+  <h1>This profile is private</h1>
+  <p class="muted">
+    <%= @user.name %> hasn’t made their collection public, and you don’t have
+    access to it.
+  </p>
+  <% unless user_signed_in? %>
+    <p>
+      <%= link_to "Sign in", new_user_session_path, class: "button" %>
+      if you have an account with access.
+    </p>
+  <% end %>
+</div>

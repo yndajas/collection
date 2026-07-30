@@ -1,0 +1,51 @@
+<% content_for :title, "Sort settings" %>
+
+<h1>Settings</h1>
+<%= render "settings/nav" %>
+
+<section class="section">
+  <h2>Sort options</h2>
+  <p class="muted">These control your sort dropdown when viewing any collection.</p>
+
+  <%= form_with url: settings_sorting_path, method: :patch, class: "stack" do %>
+    <fieldset class="field-group">
+      <legend>Built-in options</legend>
+      <p class="hint">Uncheck any you'd rather hide.</p>
+      <% CollectibleSearch::DEFAULT_OPTIONS.each do |key, label| %>
+        <label class="check">
+          <%= check_box_tag "user[shown_default_sorts][]", key,
+                !Array(@user.hidden_default_sorts).include?(key), id: "show_sort_#{key}" %>
+          <%= label %>
+        </label>
+      <% end %>
+      <%= hidden_field_tag "user[shown_default_sorts][]", "" %>
+    </fieldset>
+    <div class="actions">
+      <%= submit_tag "Save sort options", class: "button" %>
+    </div>
+  <% end %>
+
+  <h3>Custom sorts</h3>
+  <p class="muted">Build your own compound orderings; they appear in the dropdown too.</p>
+  <% if @user.custom_sorts.ordered.any? %>
+    <ul class="list">
+      <% @user.custom_sorts.ordered.each do |custom_sort| %>
+        <li class="list__row">
+          <span>
+            <strong><%= custom_sort.display_name %></strong>
+            <% if custom_sort.name.present? %>
+              <span class="muted"><%= custom_sort.summary %></span>
+            <% end %>
+          </span>
+          <span class="list__actions">
+            <%= link_to "Edit", edit_settings_sorting_custom_sort_path(custom_sort) %>
+            <%= button_to "Delete", settings_sorting_custom_sort_path(custom_sort), method: :delete, class: "button-as-link" %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="empty">No custom sorts yet.</p>
+  <% end %>
+  <p><%= link_to "Add custom sort", new_settings_sorting_custom_sort_path, class: "button" %></p>
+</section>

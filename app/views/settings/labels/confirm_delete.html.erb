@@ -1,0 +1,32 @@
+<% content_for :title, "Delete label #{@label.name}" %>
+
+<h1>Delete this label?</h1>
+
+<p>
+  You’re about to delete the label <%= label_pill(@label) %>. This can’t be
+  undone. The collectibles themselves won’t be deleted, but the label will be
+  removed from them.
+</p>
+
+<section class="section">
+  <% if @collectibles.any? %>
+    <h2>Currently applied to <%= pluralize(@collectibles.size, "collectible") %></h2>
+    <ul class="list">
+      <% @collectibles.each do |collectible| %>
+        <li class="list__row">
+          <span>
+            <span class="card__type"><%= collectible.type_label %></span>
+            <%= link_to collectible.title, profile_collectible_path(current_user.username, collectible) %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="muted">This label isn’t applied to any collectibles.</p>
+  <% end %>
+</section>
+
+<div class="actions">
+  <%= button_to "Delete label", settings_label_path(@label), method: :delete, class: "button button--danger" %>
+  <%= link_to "Cancel", settings_labels_path %>
+</div>

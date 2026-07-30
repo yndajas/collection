@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="<%= current_user&.theme || "light" %>">
   <head>
     <title><%= content_for(:title) || "Collection" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,30 +11,34 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app %>
   </head>
 
   <body>
-    <header>
-      <% if user_signed_in? %>
-        <%= button_to "Sign out", destroy_user_session_path, method: :delete %>
-      <% else %>
-        <%= link_to "Sign up", new_user_registration_path %>
-        <%= link_to "Sign in", new_user_session_path %>
-      <% end %>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <%= link_to "Collection", root_path, class: "site-header__brand" %>
+
+        <nav class="site-nav">
+          <% if user_signed_in? %>
+            <%= link_to "My collection", profile_path(current_user.username) %>
+            <%= link_to "Settings", settings_path %>
+            <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "button-as-link" %>
+          <% else %>
+            <%= link_to "Sign up", new_user_registration_path %>
+            <%= link_to "Sign in", new_user_session_path %>
+          <% end %>
+        </nav>
+      </div>
     </header>
 
-    <main>
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
+    <main class="site-main">
+      <% if notice.present? %><p class="flash flash--notice"><%= notice %></p><% end %>
+      <% if alert.present? %><p class="flash flash--alert"><%= alert %></p><% end %>
 
       <%= yield %>
     </main>

@@ -1,0 +1,22 @@
+<% content_for :title, "Edit label" %>
+
+<h1>Edit label</h1>
+
+<%= form_with model: @label, url: settings_label_path(@label), method: :patch, class: "stack" do |form| %>
+  <% if @label.errors.any? %>
+    <div class="errors"><%= @label.errors.full_messages.to_sentence %></div>
+  <% end %>
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+  <div class="field">
+    <%= form.label :colour %>
+    <%= form.select :colour, Label::COLOURS.map { |colour| [ colour.upcase_first, colour ] } %>
+  </div>
+  <%= render "type_checkboxes", form: form %>
+  <div class="actions">
+    <%= form.submit "Save", class: "button" %>
+    <%= link_to "Cancel", settings_labels_path %>
+  </div>
+<% end %>

@@ -1,0 +1,109 @@
+<details class="search-help">
+  <summary>Search syntax</summary>
+
+  <p class="muted">
+    Combine any of the filters below with plain words. Everything is
+    case-insensitive, and terms are matched together (AND). Prefix any filter
+    with <code>-</code> to negate it, e.g. <code>-is:completed</code>.
+  </p>
+
+  <table class="search-help__table">
+    <thead>
+      <tr><th>Filter</th><th>Matches</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr class="search-help__group"><th colspan="3">Any type</th></tr>
+      <tr>
+        <td>plain words</td>
+        <td>any free text field: title, notes, author, or system</td>
+        <td><code>breath of the wild</code></td>
+      </tr>
+      <tr>
+        <td><code>title:</code></td>
+        <td>title (partial match); quote multi-word values</td>
+        <td><code>title:"breath of"</code></td>
+      </tr>
+      <tr>
+        <td><code>notes:</code></td>
+        <td>notes (partial match); quote multi-word values</td>
+        <td><code>notes:"co-op night"</code></td>
+      </tr>
+      <tr>
+        <td><code>type:</code></td>
+        <td><code>video_game</code>, <code>board_game</code>, or <code>book</code> (aliases: <code>game</code>, <code>videogame</code>, <code>boardgame</code>)</td>
+        <td><code>type:book</code></td>
+      </tr>
+      <tr>
+        <td><code>label:</code></td>
+        <td>a label name; quote multi-word names</td>
+        <td><code>label:"comfort games"</code></td>
+      </tr>
+      <tr>
+        <td><code>is:completed</code> <code>is:evergreen</code></td>
+        <td>status flags</td>
+        <td><code>is:completed</code></td>
+      </tr>
+      <tr>
+        <td><code>OR</code></td>
+        <td>match <em>either</em> side; uppercase, binds looser than the implicit AND, so <code>a b OR c</code> means <code>(a AND b) OR c</code></td>
+        <td><code>players:1 OR players:3</code></td>
+      </tr>
+      <tr>
+        <td><code>AND</code></td>
+        <td>optional and uppercase; terms are already ANDed, so this only aids readability</td>
+        <td><code>type:book AND author:herbert</code></td>
+      </tr>
+      <tr>
+        <td><code>( )</code></td>
+        <td>group filters to override precedence</td>
+        <td><code>(type:book OR is:coop) an</code></td>
+      </tr>
+
+      <tr class="search-help__group"><th colspan="3">Video games</th></tr>
+      <tr>
+        <td><code>system:</code></td>
+        <td>system (partial match)</td>
+        <td><code>system:switch</code></td>
+      </tr>
+      <tr>
+        <td><code>is:local</code> <code>is:online</code> <code>is:multiplayer</code></td>
+        <td>multiplayer traits</td>
+        <td><code>is:multiplayer</code></td>
+      </tr>
+      <tr>
+        <td><code>is:coop</code> <code>is:competitive</code></td>
+        <td>co-op / competitive (also board games)</td>
+        <td><code>is:coop</code></td>
+      </tr>
+
+      <tr class="search-help__group"><th colspan="3">Board games</th></tr>
+      <tr>
+        <td><code>players:</code></td>
+        <td>playable with <em>any</em> count in the range — a 1–5 game matches <code>players:2..4</code>. Use <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, a <code>2..4</code> range, or a bare number; combine two for a window.</td>
+        <td><code>players:&gt;1 players:&lt;5</code></td>
+      </tr>
+      <tr>
+        <td><code>min_players:</code> <code>max_players:</code></td>
+        <td>the game's own limits (same operators). Bound both for a game that supports <em>every</em> count in a range — all of 2–4 is <code>min_players:&lt;=2 max_players:&gt;=4</code>.</td>
+        <td><code>max_players:&gt;=6</code></td>
+      </tr>
+      <tr>
+        <td><code>is:coop</code> <code>is:competitive</code></td>
+        <td>co-op / competitive</td>
+        <td><code>is:competitive</code></td>
+      </tr>
+
+      <tr class="search-help__group"><th colspan="3">Books</th></tr>
+      <tr>
+        <td><code>author:</code></td>
+        <td>author (partial match); quote multi-word names, e.g. <code>author:"le guin"</code></td>
+        <td><code>author:herbert</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="muted">
+    For example, <code>type:video_game is:multiplayer -is:completed zelda</code>
+    finds unfinished multiplayer games with “zelda” in the title.
+  </p>
+</details>

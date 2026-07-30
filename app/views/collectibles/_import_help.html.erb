@@ -1,0 +1,27 @@
+<details class="search-help">
+  <summary>CSV and JSON format</summary>
+
+  <p class="muted">
+    Both formats round-trip with export, so the easiest way to see the shape is
+    to export a collection first. Recognised fields: <code>type</code>,
+    <code>title</code>, <code>system</code>, <code>author</code>,
+    <code>min_players</code>, <code>max_players</code>, <code>completed</code>,
+    <code>evergreen</code>, <code>local_multiplayer</code>,
+    <code>online_multiplayer</code>, <code>cooperative</code>,
+    <code>competitive</code>, <code>labels</code>, and <code>notes</code>.
+    Only <code>title</code> is required; <code>labels</code> is a
+    comma-separated list (CSV) or an array (JSON) matched to your existing
+    labels by name.
+  </p>
+
+  <p class="muted">CSV (a header row is required):</p>
+  <pre class="code-block">Type,Title,System,Completed,Labels
+video_game,Hades,Switch,true,"Comfort games, Backlog"
+book,Dune,,true,</pre>
+
+  <p class="muted">JSON (an array of objects):</p>
+  <pre class="code-block">[
+  { "type": "video_game", "title": "Hades", "system": "Switch", "completed": true },
+  { "type": "book", "title": "Dune", "author": "Frank Herbert" }
+]</pre>
+</details>

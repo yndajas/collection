@@ -1,0 +1,38 @@
+<%# locals: collectible, username; optional: link_keys (nil = all applicable), token %>
+<% link_keys = local_assigns.fetch(:link_keys, nil) %>
+<% token = local_assigns.fetch(:token, nil) %>
+<article class="card">
+  <div class="card__body">
+    <span class="card__type"><%= collectible.type_label %></span>
+    <h3 class="card__title">
+      <%= link_to collectible.title, profile_collectible_path(username, collectible, token: token) %>
+    </h3>
+
+    <% if (subtitle = collectible_subtitle(collectible)) %>
+      <p class="card__subtitle"><%= subtitle %></p>
+    <% end %>
+
+    <% if collectible_traits(collectible).any? %>
+      <p class="tags">
+        <% collectible_traits(collectible).each do |trait| %>
+          <span class="tag"><%= trait %></span>
+        <% end %>
+      </p>
+    <% end %>
+
+    <% if collectible.labels.any? %>
+      <p class="pills">
+        <% collectible.labels.ordered.each { |label| %><%= label_pill(label) %><% } %>
+      </p>
+    <% end %>
+
+    <% links = collectible.search_links(only: link_keys) %>
+    <% if links.any? %>
+      <p class="links">
+        <% links.each do |link| %>
+          <%= link_to link[:name], link[:url], class: "chip chip--small", target: "_blank", rel: "noopener" %>
+        <% end %>
+      </p>
+    <% end %>
+  </div>
+</article>

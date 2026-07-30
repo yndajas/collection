@@ -1,0 +1,52 @@
+<% content_for :title, "Settings" %>
+
+<h1>Settings</h1>
+<%= render "settings/nav" %>
+
+<%= form_with model: @user, url: settings_path, method: :patch, class: "stack" do |form| %>
+  <% if @user.errors.any? %>
+    <div class="errors"><%= @user.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <section class="section">
+    <h2>Profile</h2>
+    <div class="field">
+      <%= form.label :display_name, "Display name" %>
+      <%= form.text_field :display_name %>
+    </div>
+    <div class="field">
+      <%= form.label :username %>
+      <%= form.text_field :username %>
+    </div>
+    <div class="field">
+      <%= form.label :theme %>
+      <%= form.select :theme, User::THEMES.map { |theme| [ theme.humanize, theme ] } %>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>External links</h2>
+    <fieldset class="field-group">
+      <legend>Links to show</legend>
+      <% Collectible::LINK_DEFINITIONS.sort_by { |definition| definition[:name].downcase }.each do |definition| %>
+        <label class="check">
+          <%= check_box_tag "user[shown_link_keys][]", definition[:key],
+                @user.visible_link_keys.include?(definition[:key]),
+                id: "link_#{definition[:key]}" %>
+          <%= definition[:name] %>
+        </label>
+      <% end %>
+      <%= hidden_field_tag "user[shown_link_keys][]", "" %>
+    </fieldset>
+
+    <%= hidden_field_tag "user[hide_links_on_others]", "0" %>
+    <label class="check">
+      <%= check_box_tag "user[hide_links_on_others]", "1", @user.hide_links_on_others? %>
+      Only show links when viewing my own collection
+    </label>
+  </section>
+
+  <div class="actions">
+    <%= form.submit "Save settings", class: "button" %>
+  </div>
+<% end %>

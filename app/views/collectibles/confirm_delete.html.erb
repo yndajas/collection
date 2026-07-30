@@ -1,0 +1,13 @@
+<% content_for :title, "Delete #{@collectible.title}" %>
+
+<h1>Delete this <%= @collectible.type_label.downcase %>?</h1>
+
+<p>
+  You’re about to remove <strong><%= @collectible.title %></strong> from your
+  collection. This can’t be undone.
+</p>
+
+<div class="actions">
+  <%= button_to "Delete", profile_collectible_path(@profile.username, @collectible), method: :delete, class: "button button--danger" %>
+  <%= link_to "Cancel", profile_collectible_path(@profile.username, @collectible) %>
+</div>

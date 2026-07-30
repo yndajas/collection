@@ -1,0 +1,91 @@
+<% content_for :title, "Visibility" %>
+
+<h1>Settings</h1>
+<%= render "settings/nav" %>
+
+<section class="section">
+  <h2>Visibility</h2>
+  <%= form_with url: settings_visibility_path, method: :patch, class: "stack" do %>
+    <fieldset class="field-group">
+      <legend>Profile visibility</legend>
+      <label class="check">
+        <%= radio_button_tag "user[public_profile]", "1", @user.public_profile? %>
+        Public
+      </label>
+      <p class="hint">Anyone can view my collection.</p>
+      <label class="check">
+        <%= radio_button_tag "user[public_profile]", "0", !@user.public_profile? %>
+        Private
+      </label>
+      <p class="hint">Only people I've given access, and anyone with a share link, can view my collection.</p>
+    </fieldset>
+    <div class="actions">
+      <%= submit_tag "Save", class: "button" %>
+    </div>
+  <% end %>
+  <% if @user.public_profile? %>
+    <p class="hint">
+      Your public profile:
+      <%= link_to profile_url(@user.username), profile_path(@user.username) %>
+    </p>
+  <% end %>
+</section>
+
+<section class="section">
+  <h3>People with access</h3>
+  <p class="muted">Give specific people access to your collection even while it's private.</p>
+  <%= form_with url: settings_visibility_profile_accesses_path, method: :post, class: "toolbar" do %>
+    <%= label_tag :identifier, "Email or username", class: "visually-hidden" %>
+    <%= text_field_tag :identifier, nil, placeholder: "Their email or username" %>
+    <%= submit_tag "Add person", class: "button button--small" %>
+  <% end %>
+  <% if @accesses.any? %>
+    <ul class="list">
+      <% @accesses.each do |access| %>
+        <li class="list__row">
+          <span><%= access.viewer.name %> <span class="muted">(<%= access.viewer.email %>)</span></span>
+          <%= button_to "Remove", settings_visibility_profile_access_path(access), method: :delete, class: "button-as-link" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="empty">You haven't shared your profile with anyone yet.</p>
+  <% end %>
+</section>
+
+<section class="section">
+  <h3>Share links</h3>
+  <p class="muted">Anyone with the link can view your collection, even while it's private.</p>
+  <%= form_with url: settings_visibility_share_links_path, method: :post, class: "toolbar" do %>
+    <%= label_tag :description, "Description", class: "visually-hidden" %>
+    <%= text_field_tag :description, nil, placeholder: "What's this for? (optional)" %>
+    <%= label_tag :expires_in, "Expiry", class: "visually-hidden" %>
+    <%= select_tag :expires_in,
+          options_for_select(Settings::ShareLinksController::EXPIRY_OPTIONS.keys, "never") %>
+    <%= submit_tag "Create link", class: "button button--small" %>
+  <% end %>
+  <% if @share_links.any? %>
+    <ul class="list">
+      <% @share_links.each do |link| %>
+        <li class="list__row list__row--stacked">
+          <div>
+            <% if link.description.present? %><strong><%= link.description %></strong><br><% end %>
+            <code class="share-url"><%= profile_url(current_user.username, token: link.token) %></code>
+            <p class="muted">
+              <% if link.expires_at.nil? %>
+                Never expires
+              <% elsif link.expired? %>
+                Expired <%= time_ago_in_words(link.expires_at) %> ago
+              <% else %>
+                Expires in <%= time_ago_in_words(link.expires_at) %>
+              <% end %>
+            </p>
+          </div>
+          <%= button_to "Revoke", settings_visibility_share_link_path(link), method: :delete, class: "button-as-link" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="empty">No share links yet.</p>
+  <% end %>
+</section>

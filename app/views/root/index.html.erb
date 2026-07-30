@@ -1,1 +1,19 @@
-<h1>Hello, world</h1>
+<% content_for :title, "Collection" %>
+
+<section class="hero">
+  <h1>Collection</h1>
+  <p class="muted">Catalogue the video games, board games, and books you own, and share them with whoever you like.</p>
+</section>
+
+<section class="section">
+  <h2>Collections</h2>
+  <% if @collections.any? %>
+    <ul class="list">
+      <% @collections.each do |entry| %>
+        <%= render "profiles/profile_row", profile: entry[:user], relationship: entry[:relationship] %>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="empty">No collections to show yet.</p>
+  <% end %>
+</section>

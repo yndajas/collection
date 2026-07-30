@@ -8,16 +8,42 @@ Rails.application.routes.draw do
     sessions: "users/sessions",
   }
 
-  get "root/index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resource :settings, only: [ :show, :update ] do
+    scope module: :settings do
+      resource :sorting, only: [ :show, :update ], controller: "sorting" do
+        resources :custom_sorts, only: [ :new, :create, :edit, :update, :destroy ]
+      end
+      resources :labels, except: [ :show, :new ] do
+        member { get :confirm_delete }
+      end
+      resource :visibility, only: [ :show, :update ], controller: "visibility" do
+        resources :profile_accesses, only: [ :create, :destroy ]
+        resources :share_links, only: [ :create, :destroy ]
+      end
+    end
+  end
+
+  # Every collectible path is nested under its owner's profile, so the URL
+  # always shows whose collection it belongs to.
+  scope "u/:username", as: :profile do
+    resources :collectibles, except: [ :index ] do
+      member do
+        get :confirm_delete
+      end
+      collection do
+        get :import
+        get :import_template
+        post :import_review
+        post :import_create
+      end
+    end
+  end
+
+  # Public/shared collection view for a given user.
+  get "u/:username", to: "profiles#show", as: :profile
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
   root "root#index"

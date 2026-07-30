@@ -1,0 +1,76 @@
+<% content_for :title, @owner ? "My collection" : "#{@user.name}'s collection" %>
+<% view_link = ->(view, label) do
+     link_to label,
+       profile_path(@user.username, view:, q: @search.query, sort: @search.sort, token: @token),
+       class: ("active" if @view == view)
+   end %>
+
+<div class="page-head">
+  <div>
+    <h1><%= @owner ? "My collection" : "#{@user.name}’s collection" %></h1>
+    <% unless @owner %>
+      <p class="muted"><%= @user.public_profile? ? "Public profile" : "Shared with you" %></p>
+    <% end %>
+  </div>
+
+  <% if @owner %>
+    <div class="page-head__actions">
+      <%= link_to "Add video game", new_profile_collectible_path(@user.username, type: "video_game"), class: "button" %>
+      <%= link_to "Add board game", new_profile_collectible_path(@user.username, type: "board_game"), class: "button" %>
+      <%= link_to "Add book", new_profile_collectible_path(@user.username, type: "book"), class: "button" %>
+      <%= link_to "Bulk import", import_profile_collectibles_path(@user.username), class: "button button--ghost" %>
+      <%= link_to "Share", settings_visibility_path, class: "button button--ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<% view_toggle = capture do %>
+  <span class="view-toggle" role="group" aria-label="View">
+    <%= view_link.call("cards", "Cards") %>
+    <%= view_link.call("list", "List") %>
+  </span>
+<% end %>
+
+<%= render "collectibles/search_form",
+      url: profile_path(@user.username),
+      search: @search, sort_options: @sort_options, view: @view, token: @token, view_toggle: view_toggle %>
+
+<% if @collectibles.any? %>
+  <p class="muted">
+    <%= pluralize(@collectibles.size, "item") %>
+    <% if @owner %>
+      · Export
+      <%= link_to "CSV", profile_path(@user.username, format: :csv, q: @search.query, sort: @search.sort) %>
+      ·
+      <%= link_to "JSON", profile_path(@user.username, format: :json, q: @search.query, sort: @search.sort) %>
+    <% end %>
+  </p>
+
+  <% if @view == "list" %>
+    <ul class="list">
+      <% @collectibles.each do |collectible| %>
+        <li class="list__row">
+          <%= link_to collectible.title, profile_collectible_path(@user.username, collectible, token: @token) %>
+          <span class="tag"><%= collectible.type_label %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="grid">
+      <% @collectibles.each do |collectible| %>
+        <%= render "collectibles/collectible",
+              collectible: collectible, username: @user.username, link_keys: @link_keys, token: @token %>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <p class="empty">
+    <% if @search.query.present? %>
+      Nothing here matches "<%= @search.query %>".
+    <% elsif @owner %>
+      Your collection is empty. Add your first title above.
+    <% else %>
+      This collection is empty.
+    <% end %>
+  </p>
+<% end %>

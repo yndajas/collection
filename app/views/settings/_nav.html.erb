@@ -1,0 +1,6 @@
+<nav class="subnav">
+  <%= link_to "General", settings_path, class: ("active" if current_page?(settings_path)) %>
+  <%= link_to "Visibility", settings_visibility_path, class: ("active" if request.path.start_with?(settings_visibility_path)) %>
+  <%= link_to "Labels", settings_labels_path, class: ("active" if request.path.start_with?(settings_labels_path)) %>
+  <%= link_to "Sorting", settings_sorting_path, class: ("active" if request.path.start_with?(settings_sorting_path)) %>
+</nav>

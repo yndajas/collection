@@ -1,0 +1,51 @@
+<%= form_with model: @custom_sort, scope: :custom_sort,
+      url: (@custom_sort.new_record? ? settings_sorting_custom_sorts_path : settings_sorting_custom_sort_path(@custom_sort)),
+      method: (@custom_sort.new_record? ? :post : :patch), class: "stack" do |form| %>
+  <% if @sort_errors.present? %>
+    <div class="errors"><%= @sort_errors.to_sentence.upcase_first %></div>
+  <% end %>
+  <% if @custom_sort.errors.any? %>
+    <div class="errors"><%= @custom_sort.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "Name (optional)" %>
+    <%= form.text_field :name, placeholder: "e.g. Type, then title" %>
+    <p class="hint">Leave blank to label it by its fields, e.g. “Type asc, title desc”.</p>
+  </div>
+
+  <p class="muted">
+    Give a field a rank to include it, lowest rank first; fields without a rank
+    are ignored. Ranks must be unique.
+  </p>
+  <table class="sort-composer">
+    <thead>
+      <tr><th>Field</th><th>Rank</th><th>Direction</th></tr>
+    </thead>
+    <tbody>
+      <% CollectibleSearch::SORT_FIELDS.each do |field, config| %>
+        <% current = @sort_matrix[field] || {} %>
+        <tr>
+          <th scope="row"><%= config[:label] %></th>
+          <td>
+            <%= label_tag "custom_sort_criteria_#{field}_rank", "#{config[:label]} rank", class: "visually-hidden" %>
+            <%= select_tag "custom_sort[criteria][#{field}][rank]",
+                  options_for_select([ [ "—", "" ] ] + (1..CollectibleSearch::SORT_FIELDS.size).map { |n| [ n, n ] }, current["rank"]),
+                  id: "custom_sort_criteria_#{field}_rank" %>
+          </td>
+          <td>
+            <%= label_tag "custom_sort_criteria_#{field}_direction", "#{config[:label]} direction", class: "visually-hidden" %>
+            <%= select_tag "custom_sort[criteria][#{field}][direction]",
+                  options_for_select([ [ "Ascending", "asc" ], [ "Descending", "desc" ] ], current["direction"].presence || "asc"),
+                  id: "custom_sort_criteria_#{field}_direction" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="actions">
+    <%= form.submit(@custom_sort.new_record? ? "Create custom sort" : "Save changes", class: "button") %>
+    <%= link_to "Cancel", settings_sorting_path %>
+  </div>
+<% end %>

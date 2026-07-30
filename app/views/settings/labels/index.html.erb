@@ -1,0 +1,54 @@
+<% content_for :title, "Labels" %>
+
+<h1>Settings</h1>
+<%= render "settings/nav" %>
+
+<section class="section">
+  <h2>Labels</h2>
+  <p class="muted">Custom labels let you tag and filter your collection any way you like.</p>
+</section>
+
+<section class="section">
+  <h3>Add a label</h3>
+  <%= form_with model: @label, url: settings_labels_path, class: "stack" do |form| %>
+    <% if @label.errors.any? %>
+      <div class="errors"><%= @label.errors.full_messages.to_sentence %></div>
+    <% end %>
+    <div class="field">
+      <%= form.label :name %>
+      <%= form.text_field :name, placeholder: "e.g. Comfort games" %>
+    </div>
+    <div class="field">
+      <%= form.label :colour %>
+      <%= form.select :colour, Label::COLOURS.map { |colour| [ colour.upcase_first, colour ] } %>
+    </div>
+    <%= render "type_checkboxes", form: form %>
+    <div class="actions">
+      <%= form.submit "Add label", class: "button" %>
+    </div>
+  <% end %>
+</section>
+
+<section class="section">
+  <% if @labels.any? %>
+    <ul class="list">
+      <% @labels.each do |label| %>
+        <li class="list__row">
+          <span>
+            <%= label_pill(label) %>
+            <span class="muted">
+              <%= pluralize(label.collectibles.size, "item") %> ·
+              <%= label.applicable_type_labels.to_sentence %>
+            </span>
+          </span>
+          <span class="list__actions">
+            <%= link_to "Edit", edit_settings_label_path(label) %>
+            <%= link_to "Delete", confirm_delete_settings_label_path(label) %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="empty">No labels yet.</p>
+  <% end %>
+</section>

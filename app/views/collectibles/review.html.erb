@@ -1,0 +1,25 @@
+<% content_for :title, "Review import" %>
+
+<% single_type = @collectibles.map(&:class).uniq.one? %>
+<h1>Review import</h1>
+<p class="muted">
+  <% if single_type %>
+    <%= pluralize(@collectibles.size, @collectibles.first.type_label.downcase) %> ready to add.
+  <% else %>
+    <%= pluralize(@collectibles.size, "item") %> ready to add.
+  <% end %>
+  Edit anything you like, then import them all.
+</p>
+
+<%= form_with url: import_create_profile_collectibles_path(current_user.username), method: :post, class: "stack stack--wide" do %>
+  <%= hidden_field_tag :type, @type.sti_name %>
+
+  <% @collectibles.each_with_index do |collectible, index| %>
+    <%= render "import_fields", collectible: collectible, index: index %>
+  <% end %>
+
+  <div class="actions">
+    <%= submit_tag "Import #{pluralize(@collectibles.size, "item")}", class: "button" %>
+    <%= link_to "Back", import_profile_collectibles_path(current_user.username, type: @type.sti_name) %>
+  </div>
+<% end %>

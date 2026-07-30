@@ -1,0 +1,41 @@
+<%# locals: url, search; optional: sort_options, view, token, view_toggle %>
+<% sort_options = local_assigns.fetch(:sort_options, CollectibleSearch::DEFAULT_OPTIONS.map { |key, label| [ label, key ] }) %>
+<% view = local_assigns.fetch(:view, nil) %>
+<% token = local_assigns.fetch(:token, nil) %>
+<% view_toggle = local_assigns.fetch(:view_toggle, nil) %>
+<%= form_with url: url, method: :get, class: "toolbar toolbar--collection" do %>
+  <%# GET forms drop the action's query string, so carry these as fields. %>
+  <% if view %><%= hidden_field_tag :view, view %><% end %>
+  <% if token %><%= hidden_field_tag :token, token %><% end %>
+  <div class="toolbar__search">
+    <%= label_tag :q, "Search collection", class: "visually-hidden" %>
+    <%= text_field_tag :q, search.query,
+          placeholder: "Search e.g. is:completed system:switch zelda",
+          class: "toolbar__input" %>
+    <%= submit_tag "Search", class: "button button--small" %>
+    <% if search.query.present? %>
+      <% clear_params = { sort: search.sort, view: view, token: token }.compact_blank %>
+      <%= link_to "Clear", "#{url}?#{clear_params.to_query}", class: "toolbar__clear" %>
+    <% end %>
+  </div>
+
+  <div class="toolbar__controls">
+    <div class="toolbar__sort">
+      <%= label_tag :sort, "Sort" %>
+      <%= select_tag :sort, options_for_select(sort_options, search.sort) %>
+      <%= submit_tag "Apply", class: "button button--small" %>
+      <% if user_signed_in? %>
+        <%= link_to "Manage sorts", settings_sorting_path, class: "toolbar__clear" %>
+      <% end %>
+    </div>
+
+    <% if view_toggle %>
+      <div class="toolbar__view">
+        <span>View</span>
+        <%= view_toggle %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "collectibles/search_help" %>

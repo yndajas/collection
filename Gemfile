@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "bootsnap", require: false
+gem "csv"
 gem "devise", "~> 5.0"
 gem "devise-two-factor", "~> 6.4"
 gem "propshaft"

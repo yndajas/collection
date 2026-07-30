@@ -1,0 +1,13 @@
+<%# locals: form %>
+<fieldset class="field-group">
+  <legend>Applies to</legend>
+  <p class="hint">Choose one or more collectible types this label can be used on.</p>
+  <% selected = Array(form.object.collectible_types) %>
+  <% Collectible::TYPES.each do |type| %>
+    <label class="check">
+      <%= check_box_tag "label[collectible_types][]", type, selected.include?(type),
+            id: "#{form.object_name}_collectible_types_#{type}" %>
+      <%= Collectible.model_for(type).type_label %>
+    </label>
+  <% end %>
+</fieldset>

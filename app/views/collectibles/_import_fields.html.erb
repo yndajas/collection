@@ -1,0 +1,91 @@
+<%# locals: collectible, index %>
+<% name = ->(attr) { "items[#{index}][#{attr}]" } %>
+<% id   = ->(attr) { "item_#{index}_#{attr}" } %>
+
+<fieldset class="field-group import-item <%= "import-item--error" if collectible.errors.any? %>">
+  <legend><%= collectible.type_label %> <%= index + 1 %></legend>
+  <%= hidden_field_tag name.("type"), collectible.class.sti_name, id: nil %>
+
+  <% if collectible.errors.any? %>
+    <div class="errors"><%= collectible.errors.full_messages.to_sentence %></div>
+  <% end %>
+
+  <div class="field">
+    <%= label_tag id.("title"), "Title" %>
+    <%= text_field_tag name.("title"), collectible.title, id: id.("title") %>
+  </div>
+
+  <% if collectible.is_a?(VideoGame) %>
+    <div class="field">
+      <%= label_tag id.("system"), "System" %>
+      <%= text_field_tag name.("system"), collectible.system, id: id.("system"),
+            placeholder: "e.g. PS5, Switch, Steam" %>
+    </div>
+  <% elsif collectible.is_a?(BoardGame) %>
+    <div class="field field--inline">
+      <%= label_tag id.("min_players"), "Min players" %>
+      <%= number_field_tag name.("min_players"), collectible.min_players, id: id.("min_players"), min: 1 %>
+    </div>
+    <div class="field field--inline">
+      <%= label_tag id.("max_players"), "Max players" %>
+      <%= number_field_tag name.("max_players"), collectible.max_players, id: id.("max_players"), min: 1 %>
+    </div>
+  <% elsif collectible.is_a?(Book) %>
+    <div class="field">
+      <%= label_tag id.("author"), "Author" %>
+      <%= text_field_tag name.("author"), collectible.author, id: id.("author") %>
+    </div>
+  <% end %>
+
+  <div class="import-item__flags">
+    <%= hidden_field_tag name.("completed"), "0", id: nil %>
+    <label class="check">
+      <%= check_box_tag name.("completed"), "1", collectible.completed?, id: id.("completed") %> Completed
+    </label>
+    <%= hidden_field_tag name.("evergreen"), "0", id: nil %>
+    <label class="check">
+      <%= check_box_tag name.("evergreen"), "1", collectible.evergreen?, id: id.("evergreen") %> Evergreen
+    </label>
+
+    <% unless collectible.is_a?(Book) %>
+      <% if collectible.is_a?(VideoGame) %>
+        <%= hidden_field_tag name.("local_multiplayer"), "0", id: nil %>
+        <label class="check">
+          <%= check_box_tag name.("local_multiplayer"), "1", collectible.local_multiplayer?, id: id.("local_multiplayer") %> Local
+        </label>
+        <%= hidden_field_tag name.("online_multiplayer"), "0", id: nil %>
+        <label class="check">
+          <%= check_box_tag name.("online_multiplayer"), "1", collectible.online_multiplayer?, id: id.("online_multiplayer") %> Online
+        </label>
+      <% end %>
+      <%= hidden_field_tag name.("cooperative"), "0", id: nil %>
+      <label class="check">
+        <%= check_box_tag name.("cooperative"), "1", collectible.cooperative?, id: id.("cooperative") %> Co-op
+      </label>
+      <%= hidden_field_tag name.("competitive"), "0", id: nil %>
+      <label class="check">
+        <%= check_box_tag name.("competitive"), "1", collectible.competitive?, id: id.("competitive") %> Competitive
+      </label>
+    <% end %>
+  </div>
+
+  <% applicable_labels = current_user.labels.ordered.select { |label| label.applies_to_type?(collectible.type) } %>
+  <% if applicable_labels.any? %>
+    <div class="field">
+      <span class="import-item__label">Labels</span>
+      <%= hidden_field_tag name.("label_ids") + "[]", "", id: nil %>
+      <% applicable_labels.each do |label| %>
+        <label class="check">
+          <%= check_box_tag name.("label_ids") + "[]", label.id,
+                collectible.label_ids.include?(label.id),
+                id: id.("label_#{label.id}") %> <%= label.name %>
+        </label>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= label_tag id.("notes"), "Notes" %>
+    <%= text_area_tag name.("notes"), collectible.notes, id: id.("notes"), rows: 2 %>
+  </div>
+</fieldset>

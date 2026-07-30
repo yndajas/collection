@@ -14,7 +14,7 @@ module TwoFactorAuthentication
       if @user.validate_and_consume_otp!(params[:otp_attempt])
         session.delete(:otp_user_id)
         sign_in(@user)
-        redirect_to root_path, notice: "Signed in successfully"
+        redirect_to after_sign_in_path_for(@user), notice: "Signed in successfully"
       else
         flash.now[:alert] = "Invalid OTP code"
         render :show

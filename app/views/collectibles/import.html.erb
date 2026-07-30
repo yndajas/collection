@@ -1,0 +1,59 @@
+<% content_for :title, "Bulk import" %>
+
+<h1>Bulk import</h1>
+<p class="muted">
+  Add several collectibles at once. On the next step you can edit each one
+  before saving them to your collection.
+</p>
+
+<%= form_with url: import_review_profile_collectibles_path(current_user.username), method: :post, multipart: true, class: "stack" do %>
+  <fieldset class="field-group">
+    <legend>Format</legend>
+    <label class="check">
+      <%= radio_button_tag :data_format, "titles", @format == "titles" %>
+      Titles — one per line, all the same type
+    </label>
+    <label class="check">
+      <%= radio_button_tag :data_format, "csv", @format == "csv" %>
+      CSV — the columns produced by export
+    </label>
+    <p class="hint">
+      <%= link_to "Download CSV template", import_template_profile_collectibles_path(current_user.username) %>
+      — a blank <code>collectibles.csv</code> with the headers filled in.
+    </p>
+    <label class="check">
+      <%= radio_button_tag :data_format, "json", @format == "json" %>
+      JSON — the objects produced by export
+    </label>
+  </fieldset>
+
+  <fieldset class="field-group">
+    <legend>Default type</legend>
+    <p class="hint">Used for the titles format, and for any CSV/JSON row without a type.</p>
+    <% Collectible::TYPES.each do |type| %>
+      <label class="check">
+        <%= radio_button_tag :type, type, type == @type.sti_name %>
+        <%= Collectible.model_for(type).type_label %>
+      </label>
+    <% end %>
+  </fieldset>
+
+  <div class="field">
+    <%= label_tag :content, "Paste your data" %>
+    <%= text_area_tag :content, params[:content], rows: 10,
+          placeholder: "Hades\nCeleste\nHollow Knight" %>
+  </div>
+
+  <div class="field">
+    <%= label_tag :file, "…or upload a file" %>
+    <%= file_field_tag :file, accept: ".csv,.json,.txt" %>
+    <p class="hint">If you choose a file, its extension sets the format automatically.</p>
+  </div>
+
+  <%= render "import_help" %>
+
+  <div class="actions">
+    <%= submit_tag "Review", class: "button" %>
+    <%= link_to "Cancel", profile_path(current_user.username) %>
+  </div>
+<% end %>

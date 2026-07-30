@@ -1,0 +1,89 @@
+<%= form_with model: @collectible,
+              scope: :collectible,
+              url: (@collectible.new_record? ?
+                     profile_collectibles_path(current_user.username) :
+                     profile_collectible_path(current_user.username, @collectible)),
+              method: (@collectible.new_record? ? :post : :patch) do |form| %>
+  <%= hidden_field_tag :type, @collectible.class.sti_name %>
+
+  <% if @collectible.errors.any? %>
+    <div class="errors">
+      <p><%= pluralize(@collectible.errors.count, "error") %> stopped this from being saved:</p>
+      <ul>
+        <% @collectible.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, autofocus: true %>
+  </div>
+
+  <% if @collectible.is_a?(VideoGame) %>
+    <div class="field">
+      <%= form.label :system, "System" %>
+      <%= form.text_field :system, placeholder: "e.g. PS5, Switch, Steam" %>
+    </div>
+  <% elsif @collectible.is_a?(BoardGame) %>
+    <fieldset class="field-group">
+      <legend>Players</legend>
+      <div class="field field--inline">
+        <%= form.label :min_players, "Minimum" %>
+        <%= form.number_field :min_players, min: 1 %>
+      </div>
+      <div class="field field--inline">
+        <%= form.label :max_players, "Maximum" %>
+        <%= form.number_field :max_players, min: 1 %>
+      </div>
+    </fieldset>
+  <% elsif @collectible.is_a?(Book) %>
+    <div class="field">
+      <%= form.label :author %>
+      <%= form.text_field :author %>
+    </div>
+  <% end %>
+
+  <fieldset class="field-group">
+    <legend>Status</legend>
+    <label class="check"><%= form.check_box :completed %> Completed</label>
+    <label class="check"><%= form.check_box :evergreen %> Evergreen (I keep coming back to it)</label>
+  </fieldset>
+
+  <% unless @collectible.is_a?(Book) %>
+    <fieldset class="field-group">
+      <legend>Multiplayer</legend>
+      <% if @collectible.is_a?(VideoGame) %>
+        <label class="check"><%= form.check_box :local_multiplayer %> Local</label>
+        <label class="check"><%= form.check_box :online_multiplayer %> Online</label>
+      <% end %>
+      <label class="check"><%= form.check_box :cooperative %> Co-operative</label>
+      <label class="check"><%= form.check_box :competitive %> Competitive</label>
+    </fieldset>
+  <% end %>
+
+  <% applicable_labels = current_user.labels.ordered.select { |label| label.applies_to_type?(@collectible.type) } %>
+  <fieldset class="field-group">
+    <legend>Labels</legend>
+    <% if applicable_labels.any? %>
+      <%= form.collection_check_boxes :label_ids, applicable_labels, :id, :name do |builder| %>
+        <label class="check"><%= builder.check_box %> <%= builder.text %></label>
+      <% end %>
+    <% else %>
+      <p class="muted">No labels apply to this type yet.</p>
+    <% end %>
+    <p class="hint"><%= link_to "Manage labels", settings_labels_path %></p>
+  </fieldset>
+
+  <div class="field">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, rows: 3 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit(@collectible.new_record? ? "Add to collection" : "Save changes", class: "button") %>
+    <%= link_to "Cancel", profile_path(current_user.username) %>
+  </div>
+<% end %>
