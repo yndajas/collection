@@ -1,6 +1,5 @@
-<%# locals: collectible, username; optional: link_keys (nil = all applicable), token %>
-<% link_keys = local_assigns.fetch(:link_keys, nil) %>
-<% token = local_assigns.fetch(:token, nil) %>
+<%# locals: (collectible:, username:, link_keys: nil, token: nil) %>
+<%# link_keys: nil shows all applicable links; an array restricts to those keys %>
 <article class="card">
   <div class="card__body">
     <span class="card__type"><%= collectible.type_label %></span>

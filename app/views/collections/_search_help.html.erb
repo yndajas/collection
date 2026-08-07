@@ -1,0 +1,72 @@
+<details class="search-help">
+  <summary>Search syntax</summary>
+
+  <p class="muted">
+    Combine any of the filters below with plain words. Everything is
+    case-insensitive, and terms are matched together (AND). Prefix any filter
+    with <code>-</code> to negate it, e.g. <code>-is:public</code>.
+  </p>
+
+  <table class="search-help__table">
+    <thead>
+      <tr><th>Filter</th><th>Matches</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>plain words</td>
+        <td>collection name or username</td>
+        <td><code>board games</code></td>
+      </tr>
+      <tr>
+        <td><code>username:</code></td>
+        <td>username (partial match)</td>
+        <td><code>username:ynda</code></td>
+      </tr>
+      <tr>
+        <td><code>display_name:</code></td>
+        <td>display name (partial match); quote multi-word values. Alias: <code>name:</code></td>
+        <td><code>display_name:"ynda’s games"</code></td>
+      </tr>
+      <tr>
+        <td><code>is:following</code></td>
+        <td>collections you follow</td>
+        <td><code>is:following</code></td>
+      </tr>
+      <tr>
+        <td><code>is:mine</code></td>
+        <td>your own collection</td>
+        <td><code>is:mine</code></td>
+      </tr>
+      <tr>
+        <td><code>is:public</code></td>
+        <td>public collections (use <code>-is:public</code> for private)</td>
+        <td><code>is:public</code></td>
+      </tr>
+      <tr>
+        <td><code>is:shared</code></td>
+        <td>private collections shared with you</td>
+        <td><code>is:shared</code></td>
+      </tr>
+      <tr>
+        <td><code>OR</code></td>
+        <td>match <em>either</em> side; uppercase, binds looser than the implicit AND, so <code>a b OR c</code> means <code>(a AND b) OR c</code></td>
+        <td><code>is:following OR is:shared</code></td>
+      </tr>
+      <tr>
+        <td><code>AND</code></td>
+        <td>optional and uppercase; terms are already ANDed, so this only aids readability</td>
+        <td><code>is:public AND zelda</code></td>
+      </tr>
+      <tr>
+        <td><code>( )</code></td>
+        <td>group filters to override precedence</td>
+        <td><code>(is:following OR is:mine) games</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="muted">
+    For example, <code>is:following OR is:shared</code> shows the collections you
+    follow together with private ones shared with you.
+  </p>
+</details>

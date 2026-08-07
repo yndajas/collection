@@ -26,9 +26,11 @@
         <nav class="site-nav">
           <% if user_signed_in? %>
             <%= link_to "My collection", profile_path(current_user.username) %>
+            <%= link_to "All collections", collections_path %>
             <%= link_to "Settings", settings_path %>
             <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "button-as-link" %>
           <% else %>
+            <%= link_to "All collections", collections_path %>
             <%= link_to "Sign up", new_user_registration_path %>
             <%= link_to "Sign in", new_user_session_path %>
           <% end %>

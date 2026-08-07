@@ -27,7 +27,11 @@ class Collectible < ApplicationRecord
     min_players max_players author
   ].freeze
 
-  belongs_to :user, touch: true
+  # Touch drives the owner's "recently updated" signal. Bumping
+  # +collection_updated_at+ (in addition to +updated_at+) gives a recency
+  # measure that only moves on collectible changes, never on logins or settings
+  # edits. Fires on create, update, and destroy.
+  belongs_to :user, touch: :collection_updated_at
   has_many :collectible_labels, dependent: :destroy
   has_many :labels, through: :collectible_labels
 

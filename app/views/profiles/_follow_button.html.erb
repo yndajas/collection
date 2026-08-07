@@ -1,0 +1,7 @@
+<%# locals: (profile:) %>
+<% if following_collection?(profile) %>
+  <%= button_to "Following", profile_follow_path(profile.username),
+        method: :delete, class: "button button--ghost", title: "Unfollow this collection" %>
+<% else %>
+  <%= button_to "Follow", profile_follow_path(profile.username), class: "button" %>
+<% end %>

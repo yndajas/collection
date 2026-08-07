@@ -24,9 +24,10 @@
 #   (a OR b) c           parentheses override precedence, e.g.
 #                        "(type:book OR is:coop) an" is books-or-coop AND "an".
 #
-# The query string is parsed into a boolean AST by CollectibleSearch::Parser;
-# this class evaluates that AST against a collectibles relation.
-class CollectibleSearch
+# The query string is parsed into a boolean AST by QuerySearch::Parser (in the
+# shared base class); this class supplies the collectible-specific token
+# mapping (#apply) and sort handling.
+class CollectibleSearch < QuerySearch
   SORTS = {
     "updated" => { updated_at: :desc },
     "-updated" => { updated_at: :asc },
@@ -88,18 +89,17 @@ class CollectibleSearch
 
   IS_FLAGS = %w[completed evergreen multiplayer local online coop cooperative competitive].freeze
 
-  attr_reader :query, :sort
+  attr_reader :sort
 
   # custom_sorts: { "custom-5" => [{ "field" =>, "direction" => }, ...], ... }
   def initialize(relation, query: nil, sort: nil, custom_sorts: {})
-    @relation = relation
-    @query = query.to_s
+    super(relation, query:)
     @custom_sorts = custom_sorts || {}
     @sort = valid_sort?(sort) ? sort : DEFAULT_SORT
   end
 
   def results
-    evaluate(Parser.call(@query), @relation).order(order_clause).distinct
+    matches.order(order_clause).distinct
   end
 
   private
@@ -115,22 +115,6 @@ class CollectibleSearch
     end
 
     SORTS.fetch(@sort, SORTS.fetch(DEFAULT_SORT))
-  end
-
-  # Turn a parsed AST (see Parser) into matching rows. AND intersects via id
-  # subqueries; OR unions via .or on structurally identical id-subquery
-  # relations, so .or stays compatible however the branches differ.
-  def evaluate(node, base)
-    case node.first
-    when :token
-      apply(base, node.last)
-    when :and
-      node.last.reduce(base) { |acc, child| acc.where(id: evaluate(child, base)) }
-    when :or
-      node.last
-        .map { |child| base.where(id: evaluate(child, base)) }
-        .reduce { |a, b| a.or(b) }
-    end
   end
 
   def apply(scope, token)
@@ -234,27 +218,10 @@ class CollectibleSearch
     end
   end
 
-  # Case-insensitive LIKE on a single column. Negation is NULL-safe: a row whose
-  # column is NULL genuinely doesn't contain the value, so it's kept.
-  def match_like(scope, column, value, negated)
-    like = "%#{value}%"
-    if negated
-      scope.where("#{column} IS NULL OR #{column} NOT LIKE ?", like)
-    else
-      scope.where("#{column} LIKE ?", like)
-    end
-  end
-
   def match_free_text(scope, value, negated)
-    like = "%#{value}%"
-    columns = %w[collectibles.title collectibles.notes collectibles.author collectibles.system]
-    if negated
-      clause = columns.map { |c| "(#{c} IS NULL OR #{c} NOT LIKE :q)" }.join(" AND ")
-      scope.where(clause, q: like)
-    else
-      clause = columns.map { |c| "#{c} LIKE :q" }.join(" OR ")
-      scope.where(clause, q: like)
-    end
+    match_any_like(scope,
+      %w[collectibles.title collectibles.notes collectibles.author collectibles.system],
+      value, negated)
   end
 
   # Label matching uses an id subquery in both directions: a collectible can

@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   # Every collectible path is nested under its owner's profile, so the URL
   # always shows whose collection it belongs to.
   scope "u/:username", as: :profile do
+    resource :follow, only: [ :create, :destroy ]
     resources :collectibles, except: [ :index ] do
       member do
         get :confirm_delete
@@ -44,6 +45,9 @@ Rails.application.routes.draw do
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Every collection the viewer can see, with search and filtering.
+  resources :collections, only: [ :index ]
 
   # Defines the root path route ("/")
   root "root#index"

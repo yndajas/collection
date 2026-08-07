@@ -1,27 +1,25 @@
 class RootController < ApplicationController
+  RECENT_LIMIT = 10
+
   def index
-    # One de-duplicated list of collections the visitor can open, each tagged
-    # with how they relate to it. First tag wins, so order the sources by
-    # priority: your own, then shared with you, then merely public.
-    collections = {}
-    remember = ->(user, relationship) { collections[user.id] ||= { user:, relationship: } }
+    # Recently updated collections the visitor can see. collection_updated_at is
+    # a content-only signal (see Collectible#touch), and NULL means an empty
+    # collection, so those are excluded rather than shown as "recently updated".
+    @recent = User.visible_to_viewer(current_user)
+                  .where.not(collection_updated_at: nil)
+                  .order(collection_updated_at: :desc)
+                  .limit(RECENT_LIMIT)
 
-    if user_signed_in?
-      remember.call(current_user, "Your collection")
-      current_user.received_accesses.includes(:owner).each do |access|
-        remember.call(access.owner, "Shared with you")
-      end
-    end
+    return unless user_signed_in?
 
-    User.where(public_profile: true).order(updated_at: :desc).limit(50).each do |user|
-      remember.call(user, "Public profile")
-    end
+    # Collections you follow (only those you can still see), and private
+    # collections shared with you. These can overlap each other and @recent.
+    @followed = User.visible_to_viewer(current_user)
+                    .where(id: current_user.followed_collections)
+                    .order(collection_updated_at: :desc)
 
-    # Group by relationship (yours, then shared, then public), most recently
-    # updated first within each group.
-    rank = { "Your collection" => 0, "Shared with you" => 1, "Public profile" => 2 }
-    @collections = collections.values.sort_by do |entry|
-      [ rank.fetch(entry[:relationship]), -entry[:user].updated_at.to_i ]
-    end
+    @shared = User.where(public_profile: false)
+                  .where(id: current_user.received_accesses.select(:owner_id))
+                  .order(collection_updated_at: :desc)
   end
 end

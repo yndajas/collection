@@ -22,6 +22,19 @@ class User < ApplicationRecord
            dependent: :destroy
   has_many :allowlisted_viewers, through: :granted_accesses, source: :viewer
 
+  # Collections this user follows. +follows_given+ are the join rows they own;
+  # +follows_received+ are cleaned up when this user (a followed collection) is
+  # destroyed.
+  has_many :follows_given,
+           class_name: "Follow",
+           foreign_key: :follower_id,
+           dependent: :destroy
+  has_many :follows_received,
+           class_name: "Follow",
+           foreign_key: :followed_id,
+           dependent: :destroy
+  has_many :followed_collections, through: :follows_given, source: :followed
+
   COLLECTION_VIEWS = %w[cards list].freeze
   THEMES = %w[light dark monochrome_light monochrome_dark pastel_woodland pastel_parlour retro].freeze
 
@@ -63,6 +76,23 @@ class User < ApplicationRecord
 
   def name
     display_name.presence || username
+  end
+
+  # Collections +viewer+ (possibly nil) is allowed to see: every public
+  # profile, plus (when signed in) their own collection and any private
+  # collections shared with them. Returns a relation so callers can further
+  # search, filter, and order it.
+  def self.visible_to_viewer(viewer)
+    public_scope = where(public_profile: true)
+    return public_scope if viewer.nil?
+
+    shared_owner_ids = ProfileAccess.where(viewer_id: viewer.id).select(:owner_id)
+    public_scope.or(where(id: viewer.id)).or(where(id: shared_owner_ids))
+  end
+
+  # Whether this user follows +user+'s collection.
+  def following?(user)
+    follows_given.exists?(followed_id: user.id)
   end
 
   # Whether +viewer+ (possibly nil) can see this user's collection, optionally

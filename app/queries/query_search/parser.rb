@@ -1,4 +1,4 @@
-class CollectibleSearch
+class QuerySearch
   # Parses a Gmail-like query string into a boolean AST, independent of any
   # database or schema. AND is implicit (adjacent terms), OR (uppercase) binds
   # looser, and parentheses override precedence. The tree is made of:
@@ -8,8 +8,8 @@ class CollectibleSearch
   #   [:token, { negated:, key:, value: }]    a single filter; key is nil for
   #                                           free text, negated for a "-" prefix
   #
-  # CollectibleSearch turns this tree into an ActiveRecord relation; the parser
-  # itself knows nothing about which keys are valid.
+  # A QuerySearch subclass turns this tree into an ActiveRecord relation; the
+  # parser itself knows nothing about which keys are valid.
   class Parser
     def self.call(query)
       new(query).call

@@ -1,14 +1,18 @@
-<%# locals: profile; optional: relationship %>
-<% relationship = local_assigns.fetch(:relationship, nil) %>
+<%# locals: (profile:, relationship: nil) %>
 <li class="list__row">
   <span class="profile-row__main">
     <%= link_to profile.name, profile_path(profile.username) %>
     <% if relationship %>
       <span class="tag"><%= relationship %></span>
     <% end %>
+    <% if following_collection?(profile) %>
+      <span class="tag tag--following">★ Following</span>
+    <% end %>
   </span>
   <span class="muted">
-    <%= pluralize(profile.collectibles.size, "item") %> ·
-    updated <%= time_ago_in_words(profile.updated_at) %> ago
+    <%= pluralize(profile.collectibles.size, "item") %>
+    <% if profile.collection_updated_at %>
+      · updated <%= time_ago_in_words(profile.collection_updated_at) %> ago
+    <% end %>
   </span>
 </li>

@@ -118,6 +118,7 @@ h3 { font-size: 1.05rem; margin: 1.5rem 0 0.75rem; }
 .hero { padding: 1rem 0 0; }
 .hero h1 { font-size: 2.2rem; }
 .hero > :last-child { margin-bottom: 0; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
 
 .muted { color: var(--muted); }
 .hint { color: var(--muted); font-size: 0.85rem; }
@@ -258,6 +259,8 @@ textarea { max-width: 560px; }
 
 /* Relationship decorators on the collections list reuse the .tag style */
 .profile-row__main { display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+/* "Following" decoration: a filled variant of .tag so it reads as active */
+.tag--following { background: var(--brand); color: var(--on-brand); border-color: var(--brand); }
 
 /* Segmented view selector (Cards / List) */
 .view-toggle { display: inline-flex; border: 1px solid var(--field-border); border-radius: 8px; overflow: hidden; }

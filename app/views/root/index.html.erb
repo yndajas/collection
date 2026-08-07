@@ -3,17 +3,34 @@
 <section class="hero">
   <h1>Collection</h1>
   <p class="muted">Catalogue the video games, board games, and books you own, and share them with whoever you like.</p>
+
+  <p class="hero__actions">
+    <% if user_signed_in? %>
+      <%= link_to "My collection", profile_path(current_user.username), class: "button" %>
+      <%= link_to "All collections", collections_path, class: "button button--ghost" %>
+    <% else %>
+      <%= link_to "Get started", new_user_registration_path, class: "button" %>
+      <%= link_to "Log in", new_user_session_path, class: "button button--ghost" %>
+    <% end %>
+  </p>
 </section>
 
+<% if user_signed_in? %>
+  <section class="section">
+    <h2>Collections you follow</h2>
+    <%= render "root/collection_list", collections: @followed,
+          empty: "You’re not following any collections yet." %>
+  </section>
+
+  <section class="section">
+    <h2>Private collections shared with you</h2>
+    <%= render "root/collection_list", collections: @shared,
+          empty: "No private collections have been shared with you." %>
+  </section>
+<% end %>
+
 <section class="section">
-  <h2>Collections</h2>
-  <% if @collections.any? %>
-    <ul class="list">
-      <% @collections.each do |entry| %>
-        <%= render "profiles/profile_row", profile: entry[:user], relationship: entry[:relationship] %>
-      <% end %>
-    </ul>
-  <% else %>
-    <p class="empty">No collections to show yet.</p>
-  <% end %>
+  <h2>Recently updated collections</h2>
+  <%= render "root/collection_list", collections: @recent,
+        empty: "No collections have been updated recently." %>
 </section>

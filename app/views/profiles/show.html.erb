@@ -21,6 +21,10 @@
       <%= link_to "Bulk import", import_profile_collectibles_path(@user.username), class: "button button--ghost" %>
       <%= link_to "Share", settings_visibility_path, class: "button button--ghost" %>
     </div>
+  <% elsif user_signed_in? %>
+    <div class="page-head__actions">
+      <%= render "profiles/follow_button", profile: @user %>
+    </div>
   <% end %>
 </div>
 

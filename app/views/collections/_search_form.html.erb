@@ -1,0 +1,25 @@
+<%# locals: (url:, search:) %>
+<%= form_with url: url, method: :get, class: "toolbar toolbar--collection" do %>
+  <div class="toolbar__search">
+    <%= label_tag :q, "Search collections", class: "visually-hidden" %>
+    <%= text_field_tag :q, search.query,
+          placeholder: "Search e.g. is:following board games",
+          class: "toolbar__input" %>
+    <%= submit_tag "Search", class: "button button--small" %>
+    <% if search.query.present? %>
+      <% clear_params = { sort: search.sort }.compact_blank %>
+      <%= link_to "Clear", "#{url}?#{clear_params.to_query}", class: "toolbar__clear" %>
+    <% end %>
+  </div>
+
+  <div class="toolbar__controls">
+    <div class="toolbar__sort">
+      <%= label_tag :sort, "Sort" %>
+      <%= select_tag :sort,
+            options_for_select(CollectionSearch::SORT_OPTIONS.map { |key, label| [ label, key ] }, search.sort) %>
+      <%= submit_tag "Apply", class: "button button--small" %>
+    </div>
+  </div>
+<% end %>
+
+<%= render "collections/search_help" %>

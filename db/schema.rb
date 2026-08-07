@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_120015) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_120001) do
   create_table "collectible_labels", force: :cascade do |t|
     t.integer "collectible_id", null: false
     t.datetime "created_at", null: false
@@ -53,6 +53,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_120015) do
     t.index ["user_id"], name: "index_custom_sorts_on_user_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "followed_id", null: false
+    t.integer "follower_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
   create_table "labels", force: :cascade do |t|
     t.json "collectible_types", default: [], null: false
     t.string "colour", default: "blue", null: false
@@ -87,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_120015) do
 
   create_table "users", force: :cascade do |t|
     t.string "collection_sort", default: "updated", null: false
+    t.datetime "collection_updated_at"
     t.string "collection_view", default: "cards", null: false
     t.integer "consumed_timestep"
     t.datetime "created_at", null: false
@@ -105,6 +116,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_120015) do
     t.string "theme", default: "light", null: false
     t.datetime "updated_at", null: false
     t.string "username"
+    t.index ["collection_updated_at"], name: "index_users_on_collection_updated_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["public_profile"], name: "index_users_on_public_profile"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -115,6 +127,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_120015) do
   add_foreign_key "collectible_labels", "labels"
   add_foreign_key "collectibles", "users"
   add_foreign_key "custom_sorts", "users"
+  add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "labels", "users"
   add_foreign_key "profile_accesses", "users", column: "owner_id"
   add_foreign_key "profile_accesses", "users", column: "viewer_id"

@@ -1,0 +1,27 @@
+<% content_for :title, "All collections" %>
+
+<div class="page-head">
+  <div>
+    <h1>All collections</h1>
+    <p class="muted">Every collection you can see.</p>
+  </div>
+</div>
+
+<%= render "collections/search_form", url: collections_path, search: @search %>
+
+<% if @collections.any? %>
+  <p class="muted"><%= pluralize(@collections.size, "collection") %></p>
+  <ul class="list">
+    <% @collections.each do |collection| %>
+      <%= render "profiles/profile_row", profile: collection %>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="empty">
+    <% if @search.query.present? %>
+      Nothing here matches “<%= @search.query %>”.
+    <% else %>
+      No collections to show yet.
+    <% end %>
+  </p>
+<% end %>

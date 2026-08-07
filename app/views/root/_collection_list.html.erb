@@ -1,0 +1,10 @@
+<%# locals: (collections:, empty: "No collections to show yet.") %>
+<% if collections.any? %>
+  <ul class="list">
+    <% collections.each do |collection| %>
+      <%= render "profiles/profile_row", profile: collection %>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="empty"><%= empty %></p>
+<% end %>
