@@ -1,8 +1,8 @@
-<%# locals: (collections:, empty: "No collections to show yet.") %>
+<%# locals: (collections:, empty: "No collections to show yet.", show_tags: false) %>
 <% if collections.any? %>
   <ul class="list">
     <% collections.each do |collection| %>
-      <%= render "profiles/profile_row", profile: collection %>
+      <%= render "profiles/profile_row", profile: collection, show_tags: show_tags %>
     <% end %>
   </ul>
 <% else %>

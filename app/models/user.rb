@@ -45,8 +45,9 @@ class User < ApplicationRecord
             allow_nil: true,
             format: { with: /\A[a-z0-9_-]+\z/, message: "may only contain lowercase letters, numbers, hyphens and underscores" }
   validates :collection_view, inclusion: { in: COLLECTION_VIEWS }
+  validates :collections_sort, inclusion: { in: CollectionSearch::SORTS }
   validates :theme, inclusion: { in: THEMES }
-  validate :collection_sort_is_known
+  validate :collectibles_sort_is_known
   validate :hidden_default_sorts_are_known
   validate :hidden_link_keys_are_known
 
@@ -57,12 +58,15 @@ class User < ApplicationRecord
   end
 
   # Options for the sort dropdown: built-in options the user hasn't hidden,
-  # followed by each of their custom sorts.
+  # followed by each of their custom sorts. Never empty: if the user has hidden
+  # every default and has no custom sorts, fall back to the default option so
+  # collectible search always has at least one sort to offer.
   def sort_options
     defaults = CollectibleSearch::DEFAULT_OPTIONS
                  .reject { |key, _| Array(hidden_default_sorts).include?(key) }
                  .map { |key, label| [ label, key ] }
-    defaults + custom_sorts.ordered.map { |sort| [ sort.display_name, sort.key ] }
+    options = defaults + custom_sorts.ordered.map { |sort| [ sort.display_name, sort.key ] }
+    options.presence || [ CollectibleSearch.default_option ]
   end
 
   # { "custom-5" => [{ "field" =>, "direction" => }, ...], ... } for CollectibleSearch.
@@ -109,10 +113,10 @@ class User < ApplicationRecord
 
   private
 
-  def collection_sort_is_known
-    return if CollectibleSearch::SORTS.key?(collection_sort) || collection_sort.to_s.match?(/\Acustom-\d+\z/)
+  def collectibles_sort_is_known
+    return if CollectibleSearch::SORTS.key?(collectibles_sort) || collectibles_sort.to_s.match?(/\Acustom-\d+\z/)
 
-    errors.add(:collection_sort, "is not a known sort")
+    errors.add(:collectibles_sort, "is not a known sort")
   end
 
   def hidden_default_sorts_are_known

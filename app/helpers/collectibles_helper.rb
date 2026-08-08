@@ -1,8 +1,22 @@
 module CollectiblesHelper
-  # A small label pill. The background is the active theme's colour for this
-  # label's palette key; text/border come from theme variables (see .pill).
-  def label_pill(label)
-    content_tag(:span, label.name, class: "pill",
+  # Per-type counts for a user's collection as phrases like "3 video games" or
+  # "1 book", non-zero types only, in Collectible::TYPES order. Empty array for
+  # an empty collection. One grouped count query per user.
+  def collectible_counts(user)
+    counts = user.collectibles.group(:type).count
+    Collectible::TYPES.filter_map do |type|
+      count = counts[type].to_i
+      next if count.zero?
+
+      "#{count} #{Collectible.model_for(type).type_label.downcase.pluralize(count)}"
+    end
+  end
+
+  # A user-defined label as a tag. The background is the active theme's colour
+  # for this label's palette key; text/border come from theme variables (see
+  # .tag--label).
+  def label_tag_span(label)
+    content_tag(:span, label.name, class: "tag tag--label",
       style: "background-color: var(--label-#{label.colour});")
   end
 

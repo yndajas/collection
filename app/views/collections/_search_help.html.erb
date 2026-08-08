@@ -48,6 +48,16 @@
         <td><code>is:shared</code></td>
       </tr>
       <tr>
+        <td><code>has:books</code></td>
+        <td>collections holding at least one of a type (also <code>video_games</code>, <code>board_games</code>)</td>
+        <td><code>has:books</code></td>
+      </tr>
+      <tr>
+        <td><code>video_games:</code> <code>board_games:</code> <code>books:</code></td>
+        <td>filter by a type's count: <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, a <code>2..4</code> range, or a bare number</td>
+        <td><code>video_games:&gt;5</code></td>
+      </tr>
+      <tr>
         <td><code>OR</code></td>
         <td>match <em>either</em> side; uppercase, binds looser than the implicit AND, so <code>a b OR c</code> means <code>(a AND b) OR c</code></td>
         <td><code>is:following OR is:shared</code></td>

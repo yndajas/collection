@@ -65,4 +65,16 @@ class QuerySearch
       scope.where(clause, q: like)
     end
   end
+
+  # Parse a numeric filter value into [[sql_op, integer], ...] (ANDed). Handles
+  # >, >=, <, <=, a Lo..Hi range, and a bare number (exact). nil if unparseable.
+  # Operators are a fixed set and integers are cast, so values are safe to inline.
+  def numeric_bounds(value)
+    case value.strip
+    when /\A(\d+)\.\.(\d+)\z/
+      [ [ ">=", $1.to_i ], [ "<=", $2.to_i ] ]
+    when /\A(>=|>|<=|<|=)?(\d+)\z/
+      [ [ $1 || "=", $2.to_i ] ]
+    end
+  end
 end

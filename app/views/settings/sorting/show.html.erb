@@ -1,11 +1,11 @@
-<% content_for :title, "Sort settings" %>
+<% content_for :title, "Collectible sorting" %>
 
 <h1>Settings</h1>
 <%= render "settings/nav" %>
 
 <section class="section">
-  <h2>Sort options</h2>
-  <p class="muted">These control your sort dropdown when viewing any collection.</p>
+  <h2>How collectibles are sorted</h2>
+  <p class="muted">These settings control which sorting options are available when viewing a collection.</p>
 
   <%= form_with url: settings_sorting_path, method: :patch, class: "stack" do %>
     <fieldset class="field-group">
@@ -26,7 +26,7 @@
   <% end %>
 
   <h3>Custom sorts</h3>
-  <p class="muted">Build your own compound orderings; they appear in the dropdown too.</p>
+  <p class="muted">Build your own custom sorts for collectibles. Custom sorts will appear alongside default sort options.</p>
   <% if @user.custom_sorts.ordered.any? %>
     <ul class="list">
       <% @user.custom_sorts.ordered.each do |custom_sort| %>

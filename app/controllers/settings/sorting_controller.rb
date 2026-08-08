@@ -12,7 +12,12 @@ module Settings
       shown = Array(params.dig(:user, :shown_default_sorts)) & CollectibleSearch::DEFAULT_OPTIONS.keys
       @user.hidden_default_sorts = CollectibleSearch::DEFAULT_OPTIONS.keys - shown
 
-      if @user.save
+      # Don't let the user hide every built-in option unless they have a custom
+      # sort to fall back on, so there's always something to sort a collection by.
+      if shown.empty? && @user.custom_sorts.none?
+        flash.now[:alert] = "Keep at least one sort option ticked, or add a custom sort first."
+        render :show, status: :unprocessable_entity
+      elsif @user.save
         redirect_to settings_sorting_path, notice: "Sort options updated."
       else
         render :show, status: :unprocessable_entity
