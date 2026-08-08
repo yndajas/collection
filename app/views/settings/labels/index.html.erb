@@ -35,7 +35,7 @@
       <% @labels.each do |label| %>
         <li class="list__row">
           <span>
-            <%= label_pill(label) %>
+            <%= label_tag_span(label) %>
             <span class="muted">
               <%= pluralize(label.collectibles.size, "item") %> ·
               <%= label.applicable_type_labels.to_sentence %>

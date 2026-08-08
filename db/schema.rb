@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_30_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_07_120001) do
   create_table "collectible_labels", force: :cascade do |t|
     t.integer "collectible_id", null: false
     t.datetime "created_at", null: false
@@ -96,9 +96,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_30_120001) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "collection_sort", default: "updated", null: false
+    t.string "collectibles_sort", default: "updated", null: false
     t.datetime "collection_updated_at"
     t.string "collection_view", default: "cards", null: false
+    t.string "collections_sort", default: "recent", null: false
     t.integer "consumed_timestep"
     t.datetime "created_at", null: false
     t.string "display_name"

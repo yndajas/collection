@@ -3,6 +3,32 @@
  * directly; keep it plain CSS.
  */
 
+/* ── Type scale ──────────────────────────────────────────────────────────
+   One home for every font size. Policy:
+   - Use a --fs-* token for every font-size; never hard-code a rem/px value, so
+     the scale stays consistent and auditable in one place.
+   - Sizes are in rem (relative to the browser's root font size), so text
+     honours the user's zoom / font-size preference. Don't use px for text.
+   - Pick by role, not by eye:
+       --fs-xs   the little labels: .tag, .tag--label, the .card__type eyebrow
+       --fs-sm   secondary text + the interactive .tag--link: hints, captions, tables
+       --fs-base body copy, buttons, form controls (the default)
+       --fs-lg   h3, the site brand
+       --fs-xl   h2
+       --fs-2xl  h1
+       --fs-3xl  hero headline
+   - Theme-independent: themes re-skin colours only, never sizes.
+   ──────────────────────────────────────────────────────────────────────── */
+:root {
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-lg: 1.125rem;   /* 18px */
+  --fs-xl: 1.25rem;    /* 20px */
+  --fs-2xl: 1.75rem;   /* 28px */
+  --fs-3xl: 2.25rem;   /* 36px */
+}
+
 /* :root is the light theme. Other themes override these variables under a
    [data-theme="…"] selector at the end of this file. Every colour is a variable
    so themes fully re-skin the app; all pairs are WCAG-AA verified. */
@@ -71,9 +97,9 @@ body {
 
 a { color: var(--brand); }
 
-h1 { font-size: 1.8rem; margin: 0 0 0.5rem; }
-h2 { font-size: 1.25rem; margin: 0 0 0.75rem; }
-h3 { font-size: 1.05rem; margin: 1.5rem 0 0.75rem; }
+h1 { font-size: var(--fs-2xl); margin: 0 0 0.5rem; }
+h2 { font-size: var(--fs-xl); margin: 0 0 0.75rem; }
+h3 { font-size: var(--fs-lg); margin: 1.5rem 0 0.75rem; }
 
 /* Header + nav */
 .site-header {
@@ -90,7 +116,7 @@ h3 { font-size: 1.05rem; margin: 1.5rem 0 0.75rem; }
   gap: 1rem;
   flex-wrap: wrap;
 }
-.site-header__brand { font-weight: 700; font-size: 1.15rem; color: var(--text); text-decoration: none; }
+.site-header__brand { font-weight: 700; font-size: var(--fs-lg); color: var(--text); text-decoration: none; }
 .site-header__brand:hover { text-decoration: underline; }
 .site-nav { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .site-nav a { color: var(--muted); font-weight: 500; text-decoration: none; }
@@ -116,18 +142,19 @@ h3 { font-size: 1.05rem; margin: 1.5rem 0 0.75rem; }
 .page-head__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
 .hero { padding: 1rem 0 0; }
-.hero h1 { font-size: 2.2rem; }
+.hero h1 { font-size: var(--fs-3xl); }
 .hero > :last-child { margin-bottom: 0; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
 
 .muted { color: var(--muted); }
-.hint { color: var(--muted); font-size: 0.85rem; }
+.hint { color: var(--muted); font-size: var(--fs-sm); }
+/* em (not a token) on purpose: inline code tracks the size of its surrounding text. */
 .hint code, code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 5px; font-size: 0.85em; }
 
 /* Buttons.
    The :not([class]) selector styles framework-default submit buttons that
    carry no class of their own (e.g. Devise's sign in / sign up / reset forms),
-   without touching our own .button / .button--small submits. */
+   without touching our own .button submits. */
 .button,
 input[type="submit"]:not([class]),
 button[type="submit"]:not([class]) {
@@ -138,7 +165,7 @@ button[type="submit"]:not([class]) {
   border: 1px solid var(--brand);
   padding: 0.5rem 0.9rem;
   border-radius: var(--radius);
-  font-size: 0.92rem;
+  font-size: var(--fs-base);
   font-weight: 500;
   text-decoration: none;
 }
@@ -147,7 +174,6 @@ input[type="submit"]:not([class]):hover,
 button[type="submit"]:not([class]):hover { background: var(--brand-dark); border-color: var(--brand-dark); text-decoration: underline; }
 .button--ghost { background: transparent; color: var(--brand); }
 .button--ghost:hover { background: var(--surface-hover); color: var(--brand-dark); text-decoration: underline; }
-.button--small { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
 .button--danger { background: var(--danger); border-color: var(--danger); color: var(--on-brand); }
 .button--danger:hover { background: var(--danger-dark); border-color: var(--danger-dark); }
 
@@ -185,6 +211,21 @@ input[type="number"], textarea, select {
   color: var(--text);
   background: var(--input-bg);
 }
+/* Custom dropdown chevron (a native select's arrow inset isn't stylable). Drawn
+   with two gradients coloured --muted, so it follows each theme's palette
+   automatically (monochrome themes included) with no per-theme rules. It sits
+   ~13px from the edge; padding-right leaves room for the text. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
 input[type="color"] { width: 48px; height: 38px; padding: 2px; border: 1px solid var(--field-border); border-radius: 8px; vertical-align: middle; }
 textarea { max-width: 560px; }
 .field-group {
@@ -210,16 +251,15 @@ textarea { max-width: 560px; }
   padding: 0.75rem 1rem;
   margin-bottom: 1.25rem;
 }
-.toolbar__search { display: flex; gap: 0.5rem; align-items: center; flex: 1 1 320px; }
-.toolbar__input { flex: 1; max-width: none; }
-.toolbar__sort { display: flex; gap: 0.5rem; align-items: center; }
+.toolbar__search { display: flex; gap: 0.5rem; align-items: center; flex: 1 1 320px; flex-wrap: wrap; }
+/* min-width: 0 lets the field shrink instead of pushing the Search button off
+   the edge; flex-wrap on the groups lets buttons/links drop to a new line. */
+.toolbar__input { flex: 1; max-width: none; min-width: 0; }
+.toolbar__sort { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
 .toolbar__view { display: flex; gap: 0.5rem; align-items: center; }
-.toolbar__clear { font-size: 0.9rem; white-space: nowrap; }
+.toolbar__clear { font-size: var(--fs-base); white-space: nowrap; }
 .toolbar__sort select { width: auto; }
 .toolbar input[type="text"] { max-width: none; }
-
-/* Match toolbar button metrics to the inputs so heights line up. */
-.toolbar .button { font-size: 1rem; padding: 0.5rem 0.9rem; }
 
 /* The collection toolbar splits onto two rows: search, then sort + view. */
 .toolbar--collection { flex-direction: column; align-items: stretch; }
@@ -238,6 +278,12 @@ textarea { max-width: 560px; }
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1rem;
 }
+/* A captioned card, e.g. the homepage "Newest addition" / "Random pick".
+   Flex column so the card fills the grid-stretched wrapper and both cards share
+   the row height, matching the collection-page grid. */
+.highlight { display: flex; flex-direction: column; }
+.highlight .muted { margin: 0 0 0.4rem; font-weight: 600; }
+.highlight .card { flex: 1; }
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -249,56 +295,50 @@ textarea { max-width: 560px; }
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--brand);
   margin-bottom: 0.35rem;
 }
 .card__title { margin: 0 0 0.25rem; }
-.card__subtitle { color: var(--muted); margin: 0.25rem 0 0; font-size: 0.9rem; }
+.card__subtitle { color: var(--muted); margin: 0.25rem 0 0; font-size: var(--fs-sm); }
 
 /* Relationship decorators on the collections list reuse the .tag style */
 .profile-row__main { display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-/* "Following" decoration: a filled variant of .tag so it reads as active */
-.tag--following { background: var(--brand); color: var(--on-brand); border-color: var(--brand); }
 
 /* Segmented view selector (Cards / List) */
 .view-toggle { display: inline-flex; border: 1px solid var(--field-border); border-radius: 8px; overflow: hidden; }
-.view-toggle a { padding: 0.5rem 0.8rem; font-size: 1rem; color: var(--brand); text-decoration: none; }
+.view-toggle a { padding: 0.5rem 0.8rem; font-size: var(--fs-base); color: var(--brand); text-decoration: none; }
 .view-toggle a + a { border-left: 1px solid var(--field-border); }
 .view-toggle a:hover { background: var(--surface-hover); text-decoration: underline; }
 .view-toggle a.active { background: var(--brand); color: var(--on-brand); }
 .view-toggle a.active:hover { text-decoration: none; }
 
 /* Tags + pills + chips */
-.tags, .pills, .links { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0 0; }
+/* Base tag: a small rounded label. The modifiers below vary it. */
 .tag {
   background: var(--tag-bg);
   color: var(--tag-text);
   border: 1px solid var(--tag-border);
   border-radius: 20px;
   padding: 0.15rem 0.6rem;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
 }
-.pill {
-  /* background-color is set inline per label to the theme's --label-<key>;
-     text/border come from the theme so contrast holds across every theme. */
+/* A user-defined label. background-color is set inline per label to the theme's
+   --label-<key>; text/border come from the theme so contrast holds everywhere. */
+.tag--label {
   color: var(--label-text);
-  border: 1px solid var(--label-border);
-  border-radius: 20px;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.78rem;
+  border-color: var(--label-border);
   font-weight: 600;
 }
-.chip {
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 0.3rem 0.75rem;
-  font-size: 0.85rem;
+/* An interactive tag rendered as a link, e.g. the external search links. */
+.tag--link {
+  border-color: var(--border);
   background: var(--surface);
+  font-size: var(--fs-sm);
 }
-.chip:hover { background: var(--surface-hover); text-decoration: underline; }
-.chip--small { padding: 0.15rem 0.55rem; font-size: 0.75rem; }
+.tag--link:hover { background: var(--surface-hover); text-decoration: underline; }
 
 /* Lists */
 .list { list-style: none; padding: 0; margin: 0; }
@@ -322,7 +362,7 @@ textarea { max-width: 560px; }
 .subnav a:hover { text-decoration: underline; }
 .subnav a.active { color: var(--text); font-weight: 700; }
 
-.breadcrumb { font-size: 0.9rem; margin-bottom: 0.75rem; display: flex; gap: 0.4rem; align-items: center; }
+.breadcrumb { font-size: var(--fs-sm); margin-bottom: 0.75rem; display: flex; gap: 0.4rem; align-items: center; }
 
 .empty, .empty-state { color: var(--muted); }
 .empty-state { text-align: center; padding: 3rem 1rem; }
@@ -334,7 +374,7 @@ textarea { max-width: 560px; }
 .search-help > summary {
   cursor: pointer;
   color: var(--brand);
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   font-weight: 500;
   width: fit-content;
 }
@@ -349,7 +389,7 @@ textarea { max-width: 560px; }
 .search-help__table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   margin: 0.5rem 0 0.75rem;
 }
 .search-help__table th,
@@ -366,7 +406,7 @@ textarea { max-width: 560px; }
 /* Custom sort composer table */
 .sort-composer { border-collapse: collapse; width: 100%; max-width: 560px; margin: 0.5rem 0 1rem; }
 .sort-composer th, .sort-composer td { text-align: left; padding: 0.4rem 0.75rem 0.4rem 0; border-bottom: 1px solid var(--border); }
-.sort-composer thead th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+.sort-composer thead th { color: var(--muted); font-weight: 600; font-size: var(--fs-sm); }
 .sort-composer tbody th { font-weight: 500; }
 .sort-composer select { width: auto; min-width: 6rem; }
 
@@ -383,7 +423,7 @@ textarea { max-width: 560px; }
   padding: 0.75rem 1rem;
   border-radius: 8px;
   overflow-x: auto;
-  font-size: 0.82rem;
+  font-size: var(--fs-sm);
   line-height: 1.45;
 }
 
@@ -621,4 +661,35 @@ textarea { max-width: 560px; }
   --label-indigo: #464a8f;
   --label-purple: #7a3b69;
   --label-pink: #a83262;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+.pagination a,
+.pagination__current {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+}
+.pagination a:hover { background: var(--surface-hover); }
+/* Current page: emphasised with a strong border + weight, not brand fill
+   (brand is reserved for calls to action). */
+.pagination__current { border-color: var(--text); font-weight: 700; }
+.pagination__gap { color: var(--muted); padding: 0 0.2rem; }
+
+@media (max-width: 40rem) {
+  /* First responsive breakpoint. Stack each list row's halves (label and
+     meta/actions) onto separate lines instead of crowding them on one line. */
+  .list__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
 }

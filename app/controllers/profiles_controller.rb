@@ -30,20 +30,24 @@ class ProfilesController < ApplicationController
                     CollectibleSearch::DEFAULT_OPTIONS.map { |key, label| [ label, key ] }
     @search = CollectibleSearch.new(@user.collectibles,
                                     query: params[:q],
-                                    sort: sort || current_user&.collection_sort || "updated",
+                                    sort: sort || current_user&.collectibles_sort || "updated",
                                     custom_sorts: custom_orders)
-    @collectibles = @search.results.includes(:labels)
+    collectibles = @search.results.includes(:labels)
     @link_keys = viewer_link_keys(@user)
 
     respond_to do |format|
-      format.html
+      # Paginate the HTML view only; the CSV/JSON exports return the full set.
+      format.html do
+        @pagination = paginate(collectibles)
+        @collectibles = @pagination.records
+      end
       format.csv do
-        send_data CollectibleExporter.new(@collectibles).to_csv,
+        send_data CollectibleExporter.new(collectibles).to_csv,
                   filename: "#{@user.username}-collection-#{Date.current.iso8601}.csv",
                   type: "text/csv"
       end
       format.json do
-        render json: CollectibleExporter.new(@collectibles).as_data
+        render json: CollectibleExporter.new(collectibles).as_data
       end
     end
   end
@@ -56,7 +60,7 @@ class ProfilesController < ApplicationController
   def remember_collection_preferences(view, sort)
     changes = {}
     changes[:collection_view] = view if view && view != current_user.collection_view
-    changes[:collection_sort] = sort if sort && sort != current_user.collection_sort
+    changes[:collectibles_sort] = sort if sort && sort != current_user.collectibles_sort
     current_user.update_columns(changes) if changes.any?
   end
 end

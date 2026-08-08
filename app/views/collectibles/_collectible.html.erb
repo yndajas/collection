@@ -20,16 +20,16 @@
     <% end %>
 
     <% if collectible.labels.any? %>
-      <p class="pills">
-        <% collectible.labels.ordered.each { |label| %><%= label_pill(label) %><% } %>
+      <p class="tags">
+        <% collectible.labels.ordered.each { |label| %><%= label_tag_span(label) %><% } %>
       </p>
     <% end %>
 
     <% links = collectible.search_links(only: link_keys) %>
     <% if links.any? %>
-      <p class="links">
+      <p class="tags">
         <% links.each do |link| %>
-          <%= link_to link[:name], link[:url], class: "chip chip--small", target: "_blank", rel: "noopener" %>
+          <%= link_to link[:name], link[:url], class: "tag tag--link", target: "_blank", rel: "noopener" %>
         <% end %>
       </p>
     <% end %>

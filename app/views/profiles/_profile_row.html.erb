@@ -1,16 +1,16 @@
-<%# locals: (profile:, relationship: nil) %>
+<%# locals: (profile:, show_tags: false) %>
 <li class="list__row">
   <span class="profile-row__main">
     <%= link_to profile.name, profile_path(profile.username) %>
-    <% if relationship %>
-      <span class="tag"><%= relationship %></span>
-    <% end %>
-    <% if following_collection?(profile) %>
-      <span class="tag tag--following">★ Following</span>
+    <% if show_tags %>
+      <% collection_tags(profile).each do |tag| %>
+        <span class="tag"><%= tag %></span>
+      <% end %>
     <% end %>
   </span>
   <span class="muted">
-    <%= pluralize(profile.collectibles.size, "item") %>
+    <% counts = collectible_counts(profile) %>
+    <%= counts.any? ? counts.join(" · ") : "No collectibles" %>
     <% if profile.collection_updated_at %>
       · updated <%= time_ago_in_words(profile.collection_updated_at) %> ago
     <% end %>

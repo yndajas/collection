@@ -32,8 +32,8 @@
 <% end %>
 
 <% if @collectible.labels.any? %>
-  <p class="pills">
-    <% @collectible.labels.ordered.each { |label| %><%= label_pill(label) %><% } %>
+  <p class="tags">
+    <% @collectible.labels.ordered.each { |label| %><%= label_tag_span(label) %><% } %>
   </p>
 <% end %>
 
@@ -48,9 +48,9 @@
 <% if links.any? %>
   <section class="section">
     <h2>Look it up</h2>
-    <p class="links">
+    <p class="tags">
       <% links.each do |link| %>
-        <%= link_to link[:name], link[:url], class: "chip", target: "_blank", rel: "noopener" %>
+        <%= link_to link[:name], link[:url], class: "tag tag--link", target: "_blank", rel: "noopener" %>
       <% end %>
     </p>
   </section>

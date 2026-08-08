@@ -1,0 +1,14 @@
+<%# locals: (pagination:) %>
+<% if pagination.pages > 1 %>
+  <nav class="pagination" aria-label="Pagination">
+    <% pagination.series.each do |item| %>
+      <% if item == :gap %>
+        <span class="pagination__gap">…</span>
+      <% elsif item == pagination.page %>
+        <span class="pagination__current" aria-current="page"><%= item %></span>
+      <% else %>
+        <%= link_to item, page_url(item) %>
+      <% end %>
+    <% end %>
+  </nav>
+<% end %>

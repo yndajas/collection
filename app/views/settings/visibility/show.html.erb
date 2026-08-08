@@ -37,7 +37,7 @@
   <%= form_with url: settings_visibility_profile_accesses_path, method: :post, class: "toolbar" do %>
     <%= label_tag :identifier, "Email or username", class: "visually-hidden" %>
     <%= text_field_tag :identifier, nil, placeholder: "Their email or username" %>
-    <%= submit_tag "Add person", class: "button button--small" %>
+    <%= submit_tag "Add person", class: "button" %>
   <% end %>
   <% if @accesses.any? %>
     <ul class="list">
@@ -62,7 +62,7 @@
     <%= label_tag :expires_in, "Expiry", class: "visually-hidden" %>
     <%= select_tag :expires_in,
           options_for_select(Settings::ShareLinksController::EXPIRY_OPTIONS.keys, "never") %>
-    <%= submit_tag "Create link", class: "button button--small" %>
+    <%= submit_tag "Create link", class: "button" %>
   <% end %>
   <% if @share_links.any? %>
     <ul class="list">

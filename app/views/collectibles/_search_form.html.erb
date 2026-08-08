@@ -9,7 +9,7 @@
     <%= text_field_tag :q, search.query,
           placeholder: "Search e.g. is:completed system:switch zelda",
           class: "toolbar__input" %>
-    <%= submit_tag "Search", class: "button button--small" %>
+    <%= submit_tag "Search", class: "button" %>
     <% if search.query.present? %>
       <% clear_params = { sort: search.sort, view: view, token: token }.compact_blank %>
       <%= link_to "Clear", "#{url}?#{clear_params.to_query}", class: "toolbar__clear" %>
@@ -20,7 +20,7 @@
     <div class="toolbar__sort">
       <%= label_tag :sort, "Sort" %>
       <%= select_tag :sort, options_for_select(sort_options, search.sort) %>
-      <%= submit_tag "Apply", class: "button button--small" %>
+      <%= submit_tag "Apply", class: "button" %>
       <% if user_signed_in? %>
         <%= link_to "Manage sorts", settings_sorting_path, class: "toolbar__clear" %>
       <% end %>

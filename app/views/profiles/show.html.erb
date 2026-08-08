@@ -41,7 +41,7 @@
 
 <% if @collectibles.any? %>
   <p class="muted">
-    <%= pluralize(@collectibles.size, "item") %>
+    <%= pluralize(@pagination.total, "collectible") %>
     <% if @owner %>
       · Export
       <%= link_to "CSV", profile_path(@user.username, format: :csv, q: @search.query, sort: @search.sort) %>
@@ -67,6 +67,8 @@
       <% end %>
     </div>
   <% end %>
+
+  <%= render "pagination", pagination: @pagination %>
 <% else %>
   <p class="empty">
     <% if @search.query.present? %>

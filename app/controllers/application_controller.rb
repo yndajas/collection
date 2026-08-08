@@ -4,7 +4,14 @@ class ApplicationController < ActionController::Base
 
   before_action :ensure_2fa_setup
 
+  PER_PAGE = 15
+
   private
+
+  # Paginate +scope+ for the requested page. Pagination owns the page math.
+  def paginate(scope, per_page: PER_PAGE)
+    Pagination.new(scope, page: params[:page].to_i, per_page:)
+  end
 
   # Which look-up link keys to show the current viewer on +profile_owner+'s
   # collection (nil means "all applicable links"). Signed-out visitors see every

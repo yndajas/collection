@@ -10,12 +10,13 @@
 <%= render "collections/search_form", url: collections_path, search: @search %>
 
 <% if @collections.any? %>
-  <p class="muted"><%= pluralize(@collections.size, "collection") %></p>
+  <p class="muted"><%= pluralize(@pagination.total, "collection") %></p>
   <ul class="list">
     <% @collections.each do |collection| %>
-      <%= render "profiles/profile_row", profile: collection %>
+      <%= render "profiles/profile_row", profile: collection, show_tags: true %>
     <% end %>
   </ul>
+  <%= render "pagination", pagination: @pagination %>
 <% else %>
   <p class="empty">
     <% if @search.query.present? %>

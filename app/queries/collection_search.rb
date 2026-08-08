@@ -10,14 +10,31 @@
 #   is:mine              the viewer's own collection
 #   is:public            public collections (negate with -is:public for private)
 #   is:shared            private collections shared with the viewer
+#   has:books            collections holding at least one of a type (also
+#                        video_games, board_games; singular/aliases accepted)
+#   video_games:>5       filter by a type's count: >, >=, <, <=, a 2..4 range, or
+#   books:2..4           a bare number. e.g. board_games:>=1
 #   a OR b, (a b) c      OR / grouping, exactly as in the collectible search
+#
+# Sort options (SORT_OPTIONS) add "Most video games / board games / books"
+# alongside recent and name.
 #
 # is:following, is:mine and is:shared are viewer-relative and match nothing when
 # signed out. The base relation already bounds visibility; these filter within it.
 class CollectionSearch < QuerySearch
-  SORTS = %w[recent name].freeze
-  SORT_OPTIONS = { "recent" => "Recently updated", "name" => "Name A–Z" }.freeze
+  # Sort key => dropdown label.
+  SORT_OPTIONS = {
+    "recent" => "Recently updated",
+    "name" => "Name A–Z",
+    "video_games" => "Most video games",
+    "board_games" => "Most board games",
+    "books" => "Most books"
+  }.freeze
+  SORTS = SORT_OPTIONS.keys.freeze
   DEFAULT_SORT = "recent"
+
+  # The "most <type>" sorts mapped to the collectible STI type they count.
+  COUNT_SORTS = { "video_games" => "video_game", "board_games" => "board_game", "books" => "book" }.freeze
 
   attr_reader :sort
 
@@ -34,12 +51,25 @@ class CollectionSearch < QuerySearch
   private
 
   # Recency uses collection_updated_at (a content-only signal); NULLs, i.e.
-  # empty collections, sort last under DESC. Name falls back to username.
+  # empty collections, sort last under DESC. Name falls back to username. The
+  # "most <type>" sorts order by a per-type count.
   def order_clause
+    return count_order(COUNT_SORTS[@sort]) if COUNT_SORTS.key?(@sort)
+
     case @sort
     when "name" then Arel.sql("lower(coalesce(users.display_name, users.username))")
     else { collection_updated_at: :desc, id: :asc }
     end
+  end
+
+  # Order by how many collectibles of +type+ each collection has, most first.
+  # The correlated subquery is safe: +type+ is a fixed, whitelisted value.
+  def count_order(type)
+    Arel.sql(<<~SQL.squish)
+      (SELECT COUNT(*) FROM collectibles
+       WHERE collectibles.user_id = users.id AND collectibles.type = '#{type}') DESC,
+      users.id ASC
+    SQL
   end
 
   def apply(scope, token)
@@ -57,8 +87,10 @@ class CollectionSearch < QuerySearch
       match_like(scope, "users.display_name", value, negated)
     when "is"
       apply_flag(scope, value.downcase, negated)
+    when "has"
+      match_has_type(scope, value, negated)
     else
-      scope
+      match_type_count(scope, key, value, negated)
     end
   end
 
@@ -75,6 +107,32 @@ class CollectionSearch < QuerySearch
       end
 
     negated ? scope.where.not(id: matching) : scope.where(id: matching)
+  end
+
+  # has:<type> -> collections holding at least one collectible of that type.
+  def match_has_type(scope, value, negated)
+    type = resolve_count_type(value)
+    return scope unless type
+
+    owners = Collectible.where(type: type).select(:user_id)
+    negated ? scope.where.not(id: owners) : scope.where(id: owners)
+  end
+
+  # <type>:<bounds> -> collections whose count of that type satisfies the bounds,
+  # e.g. video_games:>5, books:2..4. Unknown key or unparseable bounds: no-op.
+  def match_type_count(scope, key, value, negated)
+    type = resolve_count_type(key)
+    bounds = type && numeric_bounds(value)
+    return scope unless bounds
+
+    having = bounds.map { |op, n| "COUNT(*) #{op} #{n}" }.join(" AND ")
+    owners = Collectible.where(type: type).group(:user_id).having(having).select(:user_id)
+    negated ? scope.where.not(id: owners) : scope.where(id: owners)
+  end
+
+  # Resolve a type word (singular/plural or alias) to a collectible STI type.
+  def resolve_count_type(word)
+    CollectibleSearch::TYPE_ALIASES[word.to_s.downcase.singularize]
   end
 
   def followed_ids

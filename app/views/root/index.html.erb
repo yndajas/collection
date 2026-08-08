@@ -2,7 +2,7 @@
 
 <section class="hero">
   <h1>Collection</h1>
-  <p class="muted">Catalogue the video games, board games, and books you own, and share them with whoever you like.</p>
+  <p class="muted">Catalogue the video games, board games, and books you own, and share them with whomever you like.</p>
 
   <p class="hero__actions">
     <% if user_signed_in? %>
@@ -16,6 +16,26 @@
 </section>
 
 <% if user_signed_in? %>
+  <% if @newest_collectible %>
+    <section class="section">
+      <h2>From your collection</h2>
+      <div class="grid">
+        <div class="highlight">
+          <p class="muted">Newest addition</p>
+          <%= render "collectibles/collectible",
+                collectible: @newest_collectible, username: current_user.username, link_keys: @link_keys %>
+        </div>
+        <% if @random_collectible %>
+          <div class="highlight">
+            <p class="muted">Random pick</p>
+            <%= render "collectibles/collectible",
+                  collectible: @random_collectible, username: current_user.username, link_keys: @link_keys %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
   <section class="section">
     <h2>Collections you follow</h2>
     <%= render "root/collection_list", collections: @followed,
@@ -32,5 +52,5 @@
 <section class="section">
   <h2>Recently updated collections</h2>
   <%= render "root/collection_list", collections: @recent,
-        empty: "No collections have been updated recently." %>
+        empty: "No collections have been updated recently.", show_tags: true %>
 </section>

@@ -5,7 +5,7 @@
     <%= text_field_tag :q, search.query,
           placeholder: "Search e.g. is:following board games",
           class: "toolbar__input" %>
-    <%= submit_tag "Search", class: "button button--small" %>
+    <%= submit_tag "Search", class: "button" %>
     <% if search.query.present? %>
       <% clear_params = { sort: search.sort }.compact_blank %>
       <%= link_to "Clear", "#{url}?#{clear_params.to_query}", class: "toolbar__clear" %>
@@ -17,7 +17,7 @@
       <%= label_tag :sort, "Sort" %>
       <%= select_tag :sort,
             options_for_select(CollectionSearch::SORT_OPTIONS.map { |key, label| [ label, key ] }, search.sort) %>
-      <%= submit_tag "Apply", class: "button button--small" %>
+      <%= submit_tag "Apply", class: "button" %>
     </div>
   </div>
 <% end %>
